@@ -10,14 +10,14 @@ namespace TECHCOOL
 {  
     /// <summary>class <c>Request</c> context returned by <c>HttpListener</c>. 
     /// and a <c>MatchCollection</c> containing information on how the Request was routed</summary>
-    class Request {
+    public class Request {
         public HttpListenerContext Context {get;set;}
         public MatchCollection Matches {get;set;}
     }
     
     /// <summary>class <c>WebLet</c> is a small and basic webserver object. It listens for HTTP requests on a specified URI. 
     /// and responds with a string returned by a user specified method.</summary>
-    class WebLet {
+    public class WebLet {
         HttpListener httpListener;
         List<string> prefixes = new List<string>();
         bool running = false;
