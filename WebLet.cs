@@ -134,7 +134,7 @@ namespace TECHCOOL
                 }
             }
 
-
+            PageNotFound(context);
             // Obtain a response object.
             //HttpListenerResponse response = context.Response;
         }
@@ -171,7 +171,6 @@ namespace TECHCOOL
             respond(context,response,500);
         }
 
-        
         static string mimeType(string filename) {
             string[] names = filename.Split('.');
             switch (names[names.Length-1]) {
