@@ -13,17 +13,32 @@ namespace TECHCOOL
     public class Request {
         public HttpListenerContext Context {get;set;}
         public MatchCollection Matches {get;set;}
+        public RequestData Data {get;set;} = new RequestData();
     }
     
+    public class RequestData {
+        public Dictionary<string,string> Post {get; internal set;} = new Dictionary<string, string>();
+        public Dictionary<string,string> Get {get; internal set;} = new Dictionary<string, string>();
+    }
     /// <summary>class <c>WebLet</c> is a small and basic webserver object. It listens for HTTP requests on a specified URI. 
     /// and responds with a string returned by a user specified method.</summary>
     public class WebLet {
+        public class WebLetSettings {
+            /// <summary>property <c>DocumentRoot</c> The document root will be used in case a request
+            /// is not routed explicitly. Can be used to send stylesheets, javascripts and other content types to the user. Contains the current document root or current 
+            /// working directory if no root was set </summary>
+            public string DocumentRoot  {get;set;} = Directory.GetCurrentDirectory();
+            /// <summary>property <c>DefaultIndexFile</c> The file to use for if no specific file was requested  </summary>
+            public string DefaultIndexFile {get;set;} = "index.html";
+            /// <summary>property <c>UseThreading</c> sets wether to prevent blocking of main thread and wait for new connections
+            /// or to put the listening process in a thread.</summary>
+            public bool UseThreading {get;set;} = false;
+        }
+
         HttpListener httpListener;
         List<string> prefixes = new List<string>();
         bool running = false;
-        bool useThreading = false;
-        string DEFEAULT_INDEX_FILE = "index.html";
-        string WWWROOT = Directory.GetCurrentDirectory();
+        public WebLetSettings Settings { get; protected set;} = new WebLetSettings();
         Thread thread;
         Dictionary<string,Func<Request,string>> routes = new Dictionary<string, Func<Request,string>>();
         public WebLet(string address) 
@@ -31,12 +46,7 @@ namespace TECHCOOL
             if (!string.IsNullOrWhiteSpace(address))
                 prefixes.Add(address);
         }
-        /// <summary>method <c>UseThreading</c> sets wether to prevent blocking of main thread and wait for new connections
-        /// or to put the listening process in a thread.</summary>
-        public void UseThreading(bool value) 
-        {
-            useThreading = value;
-        }
+        
         /// <summary>method <c>Start</c> creates a new HttpListener instance and either create a thread for listening
         /// or block main thread until a connection was established.</summary>
         public void Start()
@@ -55,28 +65,15 @@ namespace TECHCOOL
             foreach (var s in prefixes) {
                 httpListener.Prefixes.Add(s);
             }
-            if (useThreading) {
+            if (Settings.UseThreading) {
                 thread = new Thread(new ThreadStart(listen));
                 thread.Start();
             }
             else
                 listen();
         }
-        /// <summary>method <c>DocumentRoot</c> The document root will be used in case a request
-        /// is not routed explicitly. Can be used to send stylesheets, javascripts and other content types to the user <returns>The current document root or current 
-        /// working directory if no root was set</returns> </summary>
-        public string DocumentRoot()
-        {
-            return WWWROOT;
-        }
-        /// <summary>method <c>DocumentRoot</c> set a new document root. The document root will be used in case a request
-        /// is not routed explicitly. Can be used to send stylesheets, javascripts and other content types to the user
-        /// <returns>The current document root or current 
-        /// working directory if no root was set</returns> </summary>
-        public string DocumentRoot(string path)
-        {
-            return WWWROOT = path;
-        }
+        
+        
         /// <summary>method <c>Route</c> pairs a URL together with a method. 
         /// Whenever a match is encountered the method passed is invoked  </summary>
         public void Route(string route, Func<Request,string> method) 
@@ -86,6 +83,12 @@ namespace TECHCOOL
         void processRequest(HttpListenerContext context) 
         {
             HttpListenerRequest request = context.Request;
+            Request webLetRequest = new Request();
+            webLetRequest.Context = context;
+            if (request.HttpMethod == "POST")
+            {
+                processPostRequest(webLetRequest);
+            }
 
             //Find a route
             foreach (KeyValuePair<string,Func<Request,string>> kv in routes) {
@@ -93,10 +96,9 @@ namespace TECHCOOL
                 var matches = Regex.Matches(context.Request.Url.AbsolutePath,pattern);
                 
                 if (matches.Count > 0) {
-                    var r = new Request();
-                    r.Matches = matches;
-                    r.Context = context;
-                    string response = kv.Value(r);
+                    
+                    webLetRequest.Matches = matches;
+                    string response = kv.Value(webLetRequest);
                     respond(context,response,string.IsNullOrEmpty(response) ? 500 : 200);
                     return;
                 }
@@ -104,12 +106,12 @@ namespace TECHCOOL
 
             //No route found. Examine document root
             string filename = context.Request.Url.AbsolutePath;
-            if (!System.IO.Path.HasExtension(filename)) filename += DEFEAULT_INDEX_FILE;
+            if (!System.IO.Path.HasExtension(filename)) filename += Settings.DefaultIndexFile;
 
             //Check if file exists
-            string testPath = WWWROOT + filename;
+            string testPath = Settings.DocumentRoot + filename;
 
-            if (!IsSubDirectoryOf(testPath, WWWROOT)) {
+            if (!IsSubDirectoryOf(testPath, Settings.DocumentRoot)) {
                 //Cannot access this folder
                 InternalServerError(context);
                 return;
@@ -138,6 +140,35 @@ namespace TECHCOOL
             // Obtain a response object.
             //HttpListenerResponse response = context.Response;
         }
+        void processPostRequest(Request webLetRequest) 
+        {
+            HttpListenerRequest request = webLetRequest.Context.Request;
+
+            if (!request.HasEntityBody) return;
+
+            System.IO.Stream body = request.InputStream;
+            System.Text.Encoding encoding = request.ContentEncoding;
+            System.IO.StreamReader reader = new System.IO.StreamReader(body, encoding);
+
+            string s = reader.ReadToEnd();
+            body.Close();
+            reader.Close();
+
+            webLetRequest.Data.Post = handleRequestData(s);
+        }
+        Dictionary<string,string> handleRequestData(string data) 
+        {
+            var dict = new Dictionary<string,string>();
+            var paramStrings = data.Split('&');
+            foreach (string paramString in paramStrings) 
+            {
+                int idx = paramString.IndexOf("=");
+                var key = paramString.Substring(0,idx);
+                var value = paramString.Substring(idx+1);
+                dict[key] = value;
+            }
+            return dict;
+        }
         void listen() 
         {
             httpListener.Start();
@@ -160,12 +191,12 @@ namespace TECHCOOL
             context.Response.StatusCode = code;
             context.Response.Close();
         }
-        void PageNotFound(HttpListenerContext context) 
+        public void PageNotFound(HttpListenerContext context) 
         {
             string response = "<html><head><title>404 Page not found</title><body><h1>404 Page not found</h1></body></html>";
             respond(context,response,404);
         }
-        void InternalServerError(HttpListenerContext context) 
+        public void InternalServerError(HttpListenerContext context) 
         {
             string response = "<html><head><title>500 Internal server error</title><body><h1>500 Internal server error</h1></body></html>";
             respond(context,response,500);
