@@ -163,8 +163,8 @@ namespace TECHCOOL
             foreach (string paramString in paramStrings) 
             {
                 int idx = paramString.IndexOf("=");
-                var key = paramString.Substring(0,idx);
-                var value = paramString.Substring(idx+1);
+                var key = System.Web.HttpUtility.UrlDecode(paramString.Substring(0,idx));
+                var value = System.Web.HttpUtility.UrlDecode(paramString.Substring(idx+1));
                 dict[key] = value;
             }
             return dict;
@@ -186,10 +186,12 @@ namespace TECHCOOL
         }
         void respond(HttpListenerContext context, byte[] buffer, int code=200)
         {
-            context.Response.ContentLength64 = buffer.Length;
-            context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-            context.Response.StatusCode = code;
-            context.Response.Close();
+            try {
+                context.Response.ContentLength64 = buffer.Length;
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                context.Response.StatusCode = code;
+                context.Response.Close();
+            } catch (Exception) {}
         }
         public void PageNotFound(HttpListenerContext context) 
         {
