@@ -6,6 +6,8 @@
     <authors>TECHCOOL</authors>
     <owners>TECHCOOL</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
     <description>Package Description</description>
     <dependencies>
       <group targetFramework=".NETCoreApp3.1">
@@ -15,7 +17,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\sinb\Documents\GitHub\TECHCOOL\bin\Debug\netcoreapp3.1\TECHCOOL.runtimeconfig.json" target="lib\netcoreapp3.1\TECHCOOL.runtimeconfig.json" />
     <file src="C:\Users\sinb\Documents\GitHub\TECHCOOL\bin\Debug\netcoreapp3.1\TECHCOOL.dll" target="lib\netcoreapp3.1\TECHCOOL.dll" />
   </files>
 </package>
