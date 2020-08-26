@@ -23,10 +23,8 @@ obj/Debug/netcoreapp3.1/TECHCOOL.csproj.FileListAbsolute.txt
 obj/Debug/netcoreapp3.1/TECHCOOL.csprojAssemblyReference.cache
 obj/Debug/netcoreapp3.1/TECHCOOL.dll
 obj/Debug/netcoreapp3.1/TECHCOOL.pdb
-obj/Debug/TECHCOOL.1.0.0.nuspec
 obj/Debug/netcoreapp3.1/TECHCOOL.exe
 obj/Debug/netcoreapp3.1/TECHCOOL.csproj.CopyComplete
-bin/Debug/TECHCOOL.1.0.0.nupkg
 bin/Debug/netcoreapp3.1/TECHCOOL.runtimeconfig.json
 bin/Debug/netcoreapp3.1/TECHCOOL.runtimeconfig.dev.json
 bin/Debug/netcoreapp3.1/TECHCOOL.exe
