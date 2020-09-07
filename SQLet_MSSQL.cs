@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 namespace TECHCOOL 
@@ -63,7 +64,7 @@ namespace TECHCOOL
                             } 
                             else 
                             {
-                                record.Add(reader.GetString(i));
+                                record.Add(string.Format("{0}",reader.GetValue(i)));
                             }
                         }
                         results.Add(record.ToArray());
@@ -93,8 +94,14 @@ namespace TECHCOOL
                     {
                         var record = new Dictionary<string,string>();
                         rows++;
+                        Console.WriteLine("Heelo");
                         for (var i = 0; i < reader.FieldCount; i++) {
-                            record[reader.GetName(i)] = reader.IsDBNull(i) ? "NULL" : reader.GetString(i);
+                            
+                            /*switch (reader) {
+                                case 
+                            }*/
+                            
+                            record[reader.GetName(i)] = reader.IsDBNull(i) ? "NULL" : string.Format("{0}",reader.GetValue(i));
                         }
                         results.Add(record);
                     }
