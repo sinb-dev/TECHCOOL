@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>TECHCOOL</PackageId>
+    <Version>1.0.2</Version>
+    <Authors>Simon Bønding</Authors>
+    <Company>TECHCOLLEGE</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+
   </PropertyGroup>
   <PropertyGroup>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>

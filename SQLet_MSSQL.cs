@@ -94,7 +94,6 @@ namespace TECHCOOL
                     {
                         var record = new Dictionary<string,string>();
                         rows++;
-                        Console.WriteLine("Heelo");
                         for (var i = 0; i < reader.FieldCount; i++) {
                             
                             /*switch (reader) {

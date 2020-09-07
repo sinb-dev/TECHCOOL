@@ -131,3 +131,5 @@ bin/Debug/netcoreapp3.1/publish/System.Windows.Extensions.dll
 bin/Debug/netcoreapp3.1/publish/TECHCOOL.deps.json
 bin/Debug/netcoreapp3.1/publish/TECHCOOL.dll
 bin/Debug/netcoreapp3.1/publish/TECHCOOL.pdb
+*.nuspec
+*.nupkg
