@@ -14,6 +14,7 @@ namespace TECHCOOL
         public HttpListenerContext Context {get;set;}
         public MatchCollection Matches {get;set;}
         public RequestData Data {get;set;} = new RequestData();
+        public string HttpMethod { get { return Context.Request.HttpMethod; }}
     }
     
     public class RequestData {
@@ -39,6 +40,7 @@ namespace TECHCOOL
         List<string> prefixes = new List<string>();
         bool running = false;
         public WebLetSettings Settings { get; protected set;} = new WebLetSettings();
+         
         Thread thread;
         Dictionary<string,Func<Request,string>> routes = new Dictionary<string, Func<Request,string>>();
         public WebLet(string address) 
