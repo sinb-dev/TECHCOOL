@@ -123,6 +123,10 @@ namespace TECHCOOL
                 var contentType = mimeType(testPath);
                 switch (contentType) {
                     case "application/octet-stream":
+                    case "image/png":
+                    case "image/jpeg":
+                    case "image/gif":
+                    case "image/webp":
                         byte[] bytes = File.ReadAllBytes(testPath);
                         respond(context,bytes,200);
                         return;
