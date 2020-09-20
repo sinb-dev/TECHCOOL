@@ -48,6 +48,15 @@ namespace TECHCOOL
             if (!string.IsNullOrWhiteSpace(address))
                 prefixes.Add(address);
         }
+        public WebLet(string[] addresses) 
+        {
+            foreach (var address in addresses) 
+            {
+                if (!string.IsNullOrWhiteSpace(address))
+                    prefixes.Add(address);
+            }
+        }
+        public WebLet(List<string> addresses) :this(addresses.ToArray()) { }
         
         /// <summary>method <c>Start</c> creates a new HttpListener instance and either create a thread for listening
         /// or block main thread until a connection was established.</summary>
