@@ -3,12 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>TECHCOOL</PackageId>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
+    <NuspecFile>obj\Debug\TECHCOOL.1.0.5.nuspec</NuspecFile>
     <Authors>Simon Bønding</Authors>
     <Company>TECHCOLLEGE</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
-
+    <PackageDescription>A straight forward library for quickly integrating a database and embedding a webserver in your dotnet application
+For educational use!</PackageDescription>
+    <RepositoryUrl>https://github.com/sinb-dev/TECHCOOL</RepositoryUrl>
+    <Title>TECHCOOL</Title>
+    <icon>images/TECHCOOL.png</icon>
   </PropertyGroup>
   <PropertyGroup>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
