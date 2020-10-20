@@ -34,7 +34,8 @@ namespace TECHCOOL
         private static ISQLetConnection instance;
         private static Dictionary<string,ISQLetConnection> connections = new Dictionary<string, ISQLetConnection>() {
             {"MSSQL", new SQLet_MSSQL()},
-            {"SQLite", new SQLet_Sqlite()}
+            {"SQLite", new SQLet_Sqlite()},
+            {"MySQL", new SQLet_MySQL()}
         };
         /// <summary> method <c>ConnectSQLite</c> opens a connection to a specified file. 
         /// The file created relative to the program folder</summary>
