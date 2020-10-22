@@ -3,7 +3,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>TECHCOOL</PackageId>
     <Version>1.1.0</Version>
-    <NuspecFile>obj\Debug\TECHCOOL.1.1.0.nuspec</NuspecFile>
     <Authors>Simon Bønding</Authors>
     <Company>TECHCOLLEGE</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -11,7 +10,7 @@
 For educational use!</PackageDescription>
     <RepositoryUrl>https://github.com/sinb-dev/TECHCOOL</RepositoryUrl>
     <Title>TECHCOOL</Title>
-    <icon>images/TECHCOOL.png</icon>
+    <PackageIcon>TECHCOOL.png</PackageIcon>
   </PropertyGroup>
   <PropertyGroup>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -20,5 +19,6 @@ For educational use!</PackageDescription>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0"/>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7"/>
     <PackageReference Include="MySql.Data" Version="8.0.22"/>
+    <None Include="TECHCOOL.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
 </Project>
