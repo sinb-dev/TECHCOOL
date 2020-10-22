@@ -134,3 +134,6 @@ bin/Debug/netcoreapp3.1/publish/TECHCOOL.pdb
 TECHCOOL.png
 *.nuspec
 *.nupkg
+obj/project.nuget.cache
+obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs
+obj/Debug/netcoreapp3.1/TECHCOOL.csproj.CoreCompileInputs.cache

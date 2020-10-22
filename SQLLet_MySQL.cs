@@ -8,7 +8,7 @@ namespace TECHCOOL
     {
         private string connectionString = "";
 
-        private static SQLet_MySQL instance = new SQLet_MSSQL();
+        private static SQLet_MySQL instance = new SQLet_MySQL();
 
         public void Connect(string database, string host, string user, string password)
         {

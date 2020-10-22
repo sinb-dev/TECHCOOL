@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>TECHCOOL</PackageId>
@@ -8,19 +7,18 @@
     <Authors>Simon Bønding</Authors>
     <Company>TECHCOLLEGE</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageDescription>A straight forward library for quickly integrating a database and embedding a webserver in your dotnet application
+    <PackageDescription>A straight forward library for quickly integrating a database and embedding a webserver in your dotnet application&#xD;
 For educational use!</PackageDescription>
     <RepositoryUrl>https://github.com/sinb-dev/TECHCOOL</RepositoryUrl>
     <Title>TECHCOOL</Title>
     <icon>images/TECHCOOL.png</icon>
   </PropertyGroup>
   <PropertyGroup>
-      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7"/>
+    <PackageReference Include="MySql.Data" Version="8.0.22"/>
   </ItemGroup>
-
 </Project>

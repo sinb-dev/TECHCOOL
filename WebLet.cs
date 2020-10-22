@@ -34,6 +34,7 @@ namespace TECHCOOL
             /// <summary>property <c>UseThreading</c> sets wether to prevent blocking of main thread and wait for new connections
             /// or to put the listening process in a thread.</summary>
             public bool UseThreading {get;set;} = false;
+            public bool AccessControlAllowOrigin = false;
         }
 
         HttpListener httpListener;
@@ -95,6 +96,10 @@ namespace TECHCOOL
         {
             HttpListenerRequest request = context.Request;
             Request webLetRequest = new Request();
+            
+            if (Settings.AccessControlAllowOrigin) {
+                context.Response.Headers.Add("Access-Control-Allow-Origin","*");
+            }
             webLetRequest.Context = context;
             if (request.HttpMethod == "POST")
             {
