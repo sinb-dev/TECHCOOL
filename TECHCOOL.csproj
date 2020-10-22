@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>TECHCOOL</PackageId>
-    <Version>1.0.5</Version>
-    <NuspecFile>obj\Debug\TECHCOOL.1.0.5.nuspec</NuspecFile>
+    <Version>1.1.0</Version>
+    <NuspecFile>obj\Debug\TECHCOOL.1.1.0.nuspec</NuspecFile>
     <Authors>Simon Bønding</Authors>
     <Company>TECHCOLLEGE</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
