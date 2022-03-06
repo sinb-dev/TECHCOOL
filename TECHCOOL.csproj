@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>TECHCOOL</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Simon Bønding</Authors>
     <Company>TECHCOLLEGE</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
