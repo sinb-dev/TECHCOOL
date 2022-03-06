@@ -41,5 +41,32 @@ namespace TECHCOOL.UI
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+
+        public void Start(Screen screen) 
+        {
+            ConsoleKeyInfo key;
+            do
+            {
+                Screen.Clear(screen);
+                Draw();
+                key = Console.ReadKey();
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        Screen.Display(Screen);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        Down();
+                        break;
+                    case ConsoleKey.UpArrow:
+                        Up();
+                        break;
+                    case ConsoleKey.Escape:
+                        return;
+                }
+
+            }
+            while (true);
+        }
     }
 }

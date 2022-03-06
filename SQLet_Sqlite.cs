@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using System.Collections.Generic;
 namespace TECHCOOL 
 {
@@ -13,7 +13,7 @@ namespace TECHCOOL
         public int Execute(string sql) 
         {
             
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
@@ -26,7 +26,7 @@ namespace TECHCOOL
         public string[][] GetArray(string sql) 
         {
             List<string[]> results = null;
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
@@ -62,7 +62,7 @@ namespace TECHCOOL
         public Result GetResult(string sql) 
         {
             Result results = null;
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 

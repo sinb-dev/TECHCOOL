@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TECHCOOL.UI
 {
-    class ListPage<T>
+    public class ListPage<T>
     {
         const char H_BORDER_CHARACTER = '-';
         const char V_BORDER_CHARACTER = '|';

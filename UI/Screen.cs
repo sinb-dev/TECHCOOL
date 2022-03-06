@@ -29,11 +29,14 @@ namespace TECHCOOL.UI
             Clear();
             Console.WriteLine(string.Format("==={0}===", screen.Title));
         }
-
         public static void Clear() {
             Console.Clear();
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
+        }
+        public void Quit() 
+        {
+            quit = true;
         }
 
         protected abstract void Draw();

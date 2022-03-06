@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TECHCOOL.UI
 {
-    class Form<T>
+    public class Form<T>
     {
         class Field {
             public string Title { get; set; }
@@ -35,12 +35,16 @@ namespace TECHCOOL.UI
             //Position cursor on to current field
             x = titleLength + 1;
             yi = y;
+            
             foreach (var field in fields) 
             {
+                Console.CursorVisible = true;
                 Console.SetCursorPosition(x,yi++);
                 string value = Console.ReadLine();
                 processValue(field.Property, value);
             }
+            
+            Console.CursorVisible = false;
             //Field current_field = fields[field_edit_index];
             //Console.SetCursorPosition(x,y+1);
             
