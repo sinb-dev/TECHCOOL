@@ -1,25 +1,36 @@
 using System;
-using TECHCOOL.UI;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TECHCOOL.UI
 {
     public class Form<T>
     {
-        class Field {
-            public string Title { get; set; }
-            public string Property { get; set; }
-        }
+        
         T record;
         List<Field> fields = new();
         int field_edit_index = 0;
+        Screen screen;
+        public Form(Screen screen)
+        {
+            this.screen = screen;
+        }
         public Form<T> TextBox(string title, string property) 
         {
-            fields.Add(new Field { Title = title, Property = property});
+            fields.Add(new TextBox { Title = title, Property = property});
             return this;
         }
         protected void Draw() 
+        {
+            int x,y;
+            (x,y) = Console.GetCursorPosition();
+            int i = 0;
+            foreach (var field in fields) 
+            {
+                field.Focus = (i++ == field_edit_index); 
+                field.Draw(x,y++);
+            }
+        }
+        protected void Draw_() 
         {
             int x,y;
             (x,y) = Console.GetCursorPosition();
@@ -85,9 +96,31 @@ namespace TECHCOOL.UI
         }
         public void Edit(ref T record)  
         {
-            Screen.Clear();
             this.record = record;
-            Draw();
+
+            ConsoleKeyInfo key;
+            do
+            {
+                Screen.Clear(screen);
+                Draw();
+                key = Console.ReadKey();
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        Screen.Display(screen);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        field_edit_index++;
+                        break;
+                    case ConsoleKey.UpArrow:
+                        field_edit_index--;
+                        break;
+                    case ConsoleKey.Escape:
+                        return;
+                }
+                
+            }
+            while (true);
         }
 
         int getLongestTitleLength() 
@@ -100,5 +133,33 @@ namespace TECHCOOL.UI
             return longest;
         }
     }
+    public abstract class Field {
+        public string Title { get; set; }
+        public string Property { get; set; }
+        public bool Focus {get; set;}
+        public abstract void Draw(int left, int top);
+    }
+    public class TextBox : Field
+    {
+        string value;
+        public string Value { get {return value;} set { this.value = value;}}
+        public int Width {get;set;} = 20;
+        public void Enter() {
+        }
+        public override void Draw(int left, int top) {
+            Console.SetCursorPosition(left,top);
+            Console.Write("{0,20}", Title);
+            if (Focus)
+                Console.BackgroundColor = ConsoleColor.White;
+            else
+                Console.BackgroundColor = ConsoleColor.Gray;
+
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write($"{{0,{Width}}}",Value);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+    
 }
 
