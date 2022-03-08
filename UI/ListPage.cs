@@ -16,7 +16,8 @@ namespace TECHCOOL.UI
         }
         Dictionary<string, Column> columns = new();
         List<T> records = new();
-        int selected_index = 0; 
+        int selected_index = 0;
+        bool select = false;
 
         public void Up()
         {
@@ -51,7 +52,7 @@ namespace TECHCOOL.UI
                 records.Add(e.Current);
             }
         }
-        protected void Draw()
+        public void Draw()
         {
             StringBuilder sb = new StringBuilder();
             int total_width = getWidth();
@@ -70,7 +71,7 @@ namespace TECHCOOL.UI
             sb.Clear();
             var i = 0;
             foreach (T r in records) {
-                if (selected_index == i++)
+                if (select && selected_index == i++)
                 {
                     Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Black;
@@ -108,6 +109,7 @@ namespace TECHCOOL.UI
 
         public T Select() {
 
+            select = true;
             ConsoleKeyInfo key;
             do
             {
