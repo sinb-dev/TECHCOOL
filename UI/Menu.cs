@@ -28,7 +28,6 @@ namespace TECHCOOL.UI
 
         public void Draw()
         {
-            ConsoleKeyInfo key;
             for (int i = 0; i < screens.Count; i++)
             {
                 if (index == i)
