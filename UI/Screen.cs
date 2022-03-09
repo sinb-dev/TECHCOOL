@@ -53,9 +53,9 @@ namespace TECHCOOL.UI
         static void fastClear()
         {
             StringBuilder b = new();
-            for (int y=0; y < Console.BufferHeight; y++) 
+            for (int y=0; y < Console.WindowHeight; y++) 
             {
-                b.AppendFormat("{0,"+Console.BufferWidth+"}", "");
+                b.AppendFormat("{0,"+Console.WindowWidth+"}", "");
             }
             Console.SetCursorPosition(0,0);
             Console.Write(b);

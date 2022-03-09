@@ -44,9 +44,9 @@ namespace TECHCOOL.UI
         public void Start(Screen screen) 
         {
             ConsoleKeyInfo key;
+            Screen.Clear(screen);
             do
             {
-                Screen.Clear(screen);
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)
