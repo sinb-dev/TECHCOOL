@@ -64,37 +64,6 @@ namespace TECHCOOL.UI
             f.Options.Add(option,value);
         }
         
-        protected void Draw_() 
-        {
-            int x,y;
-            (x,y) = Console.GetCursorPosition();
-            int titleLength = getLongestTitleLength();
-            
-            int yi = y;
-            foreach (KeyValuePair<string,Field> kv in fields) 
-            {
-                Field field = kv.Value;
-                Console.SetCursorPosition(x,yi++);
-                Console.Write(field.Title);
-            }
-
-            //Position cursor on to current field
-            x = titleLength + 1;
-            yi = y;
-            
-            foreach (KeyValuePair<string,Field> kv in fields) 
-            {
-                Field field = kv.Value;
-                Console.CursorVisible = true;
-                Console.SetCursorPosition(x,yi++);
-                string value = Console.ReadLine();
-            }
-            
-            Console.CursorVisible = false;
-            //Field current_field = fields[field_edit_index];
-            //Console.SetCursorPosition(x,y+1);
-            
-        }
         void processValue(string property_name, string value)
         {
             var property = record.GetType().GetProperty(property_name);
@@ -126,6 +95,12 @@ namespace TECHCOOL.UI
                 double.TryParse(value, out v);
                 property.SetValue(record,v);
             }
+            else if (typeof(decimal) == property.PropertyType)
+            {
+                decimal v = 0;
+                decimal.TryParse(value, out v);
+                property.SetValue(record,v);
+            }
 
             //property.SetValue(record,)
         }
@@ -138,6 +113,10 @@ namespace TECHCOOL.UI
             {
                 var field = kv.Value;
                 var prop = record.GetType().GetProperty(field.Property);
+                if (prop == null)
+                {
+                    throw new($"Form cannot edit: There is no property named '{field.Property}' in class '{record.GetType()}");
+                }
                 var value = prop.GetValue(record);
                 if (value != null) {
                     field.Value = value;

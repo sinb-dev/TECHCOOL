@@ -13,8 +13,10 @@ namespace TECHCOOL.UI
             public string Title { get; set; }
             public string Property { get; set; }
             public int Width { get; set; }
+            public Func<object,string> ValueProcessor { get; set;}
         }
         Dictionary<string, Column> columns = new();
+        Dictionary<ConsoleKey, Action<T>> keyActions = new();
         List<T> records = new();
         int selected_index = 0;
         bool select = false;
@@ -31,26 +33,52 @@ namespace TECHCOOL.UI
             if (selected_index >= records.Count) selected_index = 0;
         }
 
-        public ListPage<T> AddColumn(string title, string property, int width = 15) 
+        public ListPage<T> AddColumn(string title, string property, int width = 15, Func<object,string> valueProcessor =null) 
         {
             if (string.IsNullOrWhiteSpace(property)) {
                 Console.WriteLine("ListPage: Adding column with title '"+title+"' has an invalid property!");
                 return this;
             }
-            columns[property] = new Column { Title = title, Property = property, Width = width };
+            if (valueProcessor == null)
+                valueProcessor = (o) => (o!= null) ? o.ToString() : "";
+            columns[property] = new Column { Title = title, Property = property, Width = width, ValueProcessor = valueProcessor };
+            return this;
+        }
+        public ListPage<T> AddColumn(string title, string property, int width, string format) 
+        {
+            if (string.IsNullOrWhiteSpace(property)) {
+                Console.WriteLine("ListPage: Adding column with title '"+title+"' has an invalid property!");
+                return this;
+            }
+            if (format == null) format = ","+width;
+            else if (format.Substring(0,1) != ":" && format.Substring(0,1) != ",") format = ","+format;
+            Func<object,string> valueProcessor = (o) => string.Format("{0"+format+"}",o);
+            columns[property] = new Column { Title = title, Property = property, Width = width, ValueProcessor = valueProcessor };
             return this;
         }
 
-        public void Add(T record) 
+        public ListPage<T> AddKey(ConsoleKey key, Action<T> callback)
+        {
+            keyActions[key] = callback;
+            return this;
+        }
+
+        public ListPage<T> Add(T record) 
         { 
             records.Add(record);
+            return this;
         }
-        public void Add(IEnumerable<T> record) 
+        public ListPage<T> Add(IEnumerable<T> record) 
         { 
             IEnumerator<T> e = record.GetEnumerator();
             while (e.MoveNext()) {
                 records.Add(e.Current);
             }
+            return this;
+        }
+        public bool Remove(T record)
+        {
+            return records.Remove(record);
         }
         public void Draw()
         {
@@ -82,7 +110,8 @@ namespace TECHCOOL.UI
                 {
                     try {
                         var prop = r.GetType().GetProperty(kv.Value.Property);
-                        var val = prop.GetValue(r);
+                        var val = kv.Value.ValueProcessor(prop.GetValue(r));
+
                         int width = kv.Value.Width;
                         sb.AppendFormat("{0, "+width+"}{1}", val,V_BORDER_CHARACTER);
                     } catch(NullReferenceException e) {
@@ -110,12 +139,15 @@ namespace TECHCOOL.UI
         public T Select() {
 
             select = true;
-            ConsoleKeyInfo key;
+            ConsoleKey key;
+            int x,y;
+            (x,y) = Console.GetCursorPosition();
             do
             {
+                Console.SetCursorPosition(x,y);
                 Draw();
-                key = Console.ReadKey();
-                switch (key.Key)
+                key = Console.ReadKey().Key;
+                switch (key)
                 {
                     case ConsoleKey.Escape:
                         return default(T);
@@ -127,7 +159,13 @@ namespace TECHCOOL.UI
                     case ConsoleKey.UpArrow:
                         Up();
                         break;
+                    default:
+                        if (keyActions.ContainsKey(key))
+                            keyActions[key](records[selected_index]);
+                        break;
+                        
                 }
+                
             }
             while (true);
         }

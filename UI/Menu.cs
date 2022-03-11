@@ -44,9 +44,13 @@ namespace TECHCOOL.UI
         public void Start(Screen screen) 
         {
             ConsoleKeyInfo key;
-            Screen.Clear(screen);
+            int x,y;
+            (x,y) = Console.GetCursorPosition();
+            
             do
             {
+                Console.SetCursorPosition(x,y);
+                Screen.Clear(screen);
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)
@@ -61,6 +65,7 @@ namespace TECHCOOL.UI
                         Up();
                         break;
                     case ConsoleKey.Escape:
+                        screen.Quit();
                         return;
                 }
 
