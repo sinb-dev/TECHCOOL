@@ -184,7 +184,12 @@ editor.TextBox("Todo name", "Title");
 editor.Edit(todo);
 
 ```
-
+Der er forskellige kontroller, som kan sættes op i en editor. Kontrollerne er afhængige af propertiens datatype:
+* TextBox til strings
+* SelectBox til flere valg (f.eks. enums)
+* IntBox til int
+* DoubleBox til double
+Som default kan TextBox bruges 
 3. Færdigt eksempel
 ```C#
 public class EditTodoScreen : Screen
