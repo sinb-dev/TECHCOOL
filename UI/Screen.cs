@@ -56,7 +56,7 @@ namespace TECHCOOL.UI
             StringBuilder b = new();
             for (int y=0; y < Console.WindowHeight; y++) 
             {
-                b.AppendFormat("{0,"+Console.WindowWidth+"}", "");
+                b.AppendFormat("{0,"+Console.WindowWidth+"}\n", "");
             }
             Console.SetCursorPosition(0,0);
             Console.Write(b);

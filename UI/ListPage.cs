@@ -160,7 +160,7 @@ namespace TECHCOOL.UI
                         Up();
                         break;
                     default:
-                        if (keyActions.ContainsKey(key))
+                        if (keyActions.ContainsKey(key) && records.Contains(records[selected_index]))
                             keyActions[key](records[selected_index]);
                         break;
                         
