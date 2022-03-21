@@ -24,11 +24,7 @@ namespace TECHCOOL.UI
             return title;
             }
         }
-        Screen screen;
-        public Form(Screen screen)
-        {
-            this.screen = screen;
-        }
+
         public Form<T> TextBox(string title, string property) 
         {
             fields.Add(title, new TextBox { Title = title, Property = property});
@@ -104,7 +100,7 @@ namespace TECHCOOL.UI
 
             //property.SetValue(record,)
         }
-        public void Edit(ref T record)  
+        public void Edit(T record)  
         {
             this.record = record;
             //Copy values from record into fields
