@@ -241,6 +241,7 @@ Menu menu = new Menu();
 menu.Add(new MyFirstScreen());
 menu.Add(new TodoListScreen());
 menu.Add(new EditTodoScreen());
+menu.Start(this); //Start the menu letting the user pick a menu item:
 ```
 
 3. Brug nu menuen i din main metode:
