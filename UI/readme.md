@@ -124,15 +124,27 @@ Dette gør listen interaktiv og lader brugeren vælge en fra listen.
         public override string Title { get; set; } = "List of tasks to do"; 
         protected override void Draw()
         {
-            Clear(this); //Clean the screen
-            ListPage<Todo> listPage = new ListPage<Todo>();
-            listPage.Add(new Todo("Buy milk"));
-            listPage.Add(new Todo("Walk the dog", 2));
-            listPage.Add(new Todo("Clean toilet"));
+	    do
+	    {
+                 Clear(this); //Clean the screen
+		 ListPage<Todo> listPage = new ListPage<Todo>();
+                 listPage.Add(new Todo("Buy milk"));
+                 listPage.Add(new Todo("Walk the dog", 2));
+                 listPage.Add(new Todo("Clean toilet")); 
 
-            listPage.AddColumn("Todo", "Title");
-
-            Todo selected = listPage.Select();
+                 listPage.AddColumn("Todo", "Title");
+		
+                 Todo selected = listPage.Select();
+		 if (selected != null)
+		 {
+		     Screen.Display(new EditTodoScreen(selected))
+                 }
+		 else
+                 {
+		      Quit();
+		      return;
+		 }
+             } while (Show);
         }
     }
 ```
