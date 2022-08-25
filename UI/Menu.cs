@@ -4,15 +4,29 @@ using System.Text;
 
 namespace TECHCOOL.UI 
 {
+    public class ScreenExtended
+    {
+        public Screen screen { get; set; }
+        public string Text { get; set; }
+    }
     public class Menu
     {
-        List<Screen> screens = new List<Screen>();
+        List<ScreenExtended> screens = new List<ScreenExtended>();
         int index = 0;
         public int Index { get { return index; } set { index = value % screens.Count; } }
-        public Screen Screen { get { return screens.Count > 0 ? screens[index] : null; } }
-        public void Add(Screen screen)
+        public Screen Screen { get { return screens.Count > 0 ? screens[index].screen : null; } }
+        
+        public static ConsoleColor DefaultForeground { get; set; } = ConsoleColor.White;
+        public static ConsoleColor DefaultBackground { get; set; } = ConsoleColor.Black;
+        public static ConsoleColor FocusForeground { get; set; } = ConsoleColor.Black;
+        public static ConsoleColor FocusBackground { get; set; } = ConsoleColor.White;
+        
+        public void Add(Screen screen, string Text = null)
         {
-            screens.Add(screen);
+            ScreenExtended thisscreen = new ScreenExtended();
+            thisscreen.screen = screen;
+            thisscreen.Text = Text;
+            screens.Add(thisscreen);
         }
         public void Up()
         {
@@ -32,16 +46,23 @@ namespace TECHCOOL.UI
             {
                 if (index == i)
                 {
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = FocusBackground;
+                    Console.ForegroundColor = FocusForeground;
                 }
-                Console.WriteLine($"{i+1}. {screens[i].Title}");
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
+                if (screens[i].Text != null)
+                {
+                    Console.WriteLine($"{i + 1}. {screens[i].Text}");
+                }
+                else
+                {
+                    Console.WriteLine($"{i + 1}. {screens[i].screen.Title}");
+                }
+                Console.BackgroundColor = DefaultBackground;
+                Console.ForegroundColor = DefaultForeground;
             }
         }
 
-        public void Start(Screen screen) 
+        public void Start(Screen screen)
         {
             ConsoleKeyInfo key;
             int x,y;
