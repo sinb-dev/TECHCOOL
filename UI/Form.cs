@@ -63,7 +63,7 @@ namespace TECHCOOL.UI
         void processValue(string property_name, string value)
         {
             var property = record.GetType().GetProperty(property_name);
-            if (property == null ) 
+            if (property == null )
             {
                 Console.WriteLine($"Form: No such property '{property_name}' on {record.GetType()}");
                 return;
@@ -97,10 +97,13 @@ namespace TECHCOOL.UI
                 decimal.TryParse(value, out v);
                 property.SetValue(record,v);
             }
-
-            //property.SetValue(record,)
+            //property.SetValue(record, value);
+            else
+            {
+                throw new Exception($"Form: No such property type '{property.PropertyType}' on {record.GetType()}");
+            }
         }
-        public void Edit(T record)  
+        public void Edit(T record)
         {
             this.record = record;
             //Copy values from record into fields
