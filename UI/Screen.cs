@@ -7,13 +7,14 @@ namespace TECHCOOL.UI
     public abstract class Screen
     {
         public abstract string Title { get; set; }
-        public bool Show { get { return !quit; }}
-        public static ConsoleColor DefaultForeground = ConsoleColor.White;
-        public static ConsoleColor DefaultBackground = ConsoleColor.Black;
-        public static ConsoleColor FocusForeground = ConsoleColor.Black;
-        public static ConsoleColor FocusBackground = ConsoleColor.White;
-        public static ConsoleColor FieldForeground = ConsoleColor.White;
-        public static ConsoleColor FieldBackground = ConsoleColor.DarkGray;
+        public bool Show { get { return !quit; } }
+        public static ConsoleColor DefaultForeground { get; set; } = ConsoleColor.White;
+        public static ConsoleColor DefaultBackground { get; set; } = ConsoleColor.Black;
+        public static ConsoleColor FocusForeground { get; set; } = ConsoleColor.Black;
+        public static ConsoleColor FocusBackground { get; set; } = ConsoleColor.White;
+        public static ConsoleColor FieldForeground { get; set; } = ConsoleColor.White;
+        public static ConsoleColor FieldBackground { get; set; } = ConsoleColor.DarkGray;
+        
         static Screen current = null;
         private bool quit = false;
         public static void Display(Screen screen)
