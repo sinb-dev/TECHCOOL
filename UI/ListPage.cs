@@ -126,6 +126,7 @@ namespace TECHCOOL.UI
             }
             sb.Append("".PadRight(getWidth(),H_BORDER_CHARACTER));
             Console.WriteLine(sb.ToString());
+            Console.SetCursorPosition(0, selected_index);
         }
         public int getWidth() {
             int width = columns.Count + 1; //Include borders in with.
