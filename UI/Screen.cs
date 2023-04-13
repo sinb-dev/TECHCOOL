@@ -7,7 +7,7 @@ namespace TECHCOOL.UI
     public abstract class Screen
     {
         public abstract string Title { get; set; }
-        public bool Show { get { return !quit; }}
+        public bool Show { get { return !quit; } }
         public static ConsoleColor DefaultForeground = ConsoleColor.White;
         public static ConsoleColor DefaultBackground = ConsoleColor.Black;
         public static ConsoleColor FocusForeground = ConsoleColor.Black;
@@ -24,14 +24,14 @@ namespace TECHCOOL.UI
             do
             {
                 screen.Draw();
-                if (screen.quit) 
+                if (screen.quit)
                     break;
                 key = Console.ReadKey().Key;
-                if (key == ConsoleKey.Escape) 
+                if (key == ConsoleKey.Escape)
                     break;
             } while (true);
         }
-        public static void ColorDefault() 
+        public static void ColorDefault()
         {
             Console.BackgroundColor = DefaultBackground;
             Console.ForegroundColor = DefaultForeground;
@@ -47,35 +47,34 @@ namespace TECHCOOL.UI
             Console.ForegroundColor = FocusForeground;
         }
         public static void Clear(Screen screen)
-        {   
+        {
             fastClear();
             Console.WriteLine(string.Format("==={0}===", screen.Title));
         }
         static void fastClear()
         {
-            StringBuilder b = new();
-            for (int y=0; y < Console.WindowHeight; y++) 
+            Console.SetCursorPosition(0, 0);
+            for (int y = 0; y < Console.WindowHeight; y++)
             {
-                b.AppendFormat("{0,"+Console.WindowWidth+"}\n", "");
+                Console.WriteLine(string.Format("{0," + (Console.WindowWidth - 1) + "}", ""));
             }
-            Console.SetCursorPosition(0,0);
-            Console.Write(b);
-            Console.SetCursorPosition(0,0);
+            Console.SetCursorPosition(0, 0);
         }
-        public static void Clear() {
+        public static void Clear()
+        {
             ColorDefault();
             Clear(current);
         }
-        public void Quit() 
+        public void Quit()
         {
             quit = true;
         }
 
         protected abstract void Draw();
     }
-    public class EscapeScreen : Screen 
+    public class EscapeScreen : Screen
     {
         public override string Title { get; set; } = "";
-        protected override void Draw() {}
+        protected override void Draw() { }
     }
 }
