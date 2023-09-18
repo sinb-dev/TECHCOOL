@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TECHCOOL.UI
 {
-    public class ListPage<T>
+    public class ListPage<T> where T : new()
     {
         const char H_BORDER_CHARACTER = '-';
         const char V_BORDER_CHARACTER = '|';
@@ -161,8 +161,16 @@ namespace TECHCOOL.UI
                         Up();
                         break;
                     default:
-                        if (keyActions.ContainsKey(key) && records.Contains(records[selected_index]))
-                            keyActions[key](records[selected_index]);
+                        if (keyActions.ContainsKey(key)) {
+                            if (records.Count > 0 && records.Contains(records[selected_index])) 
+                            {
+                                keyActions[key](records[selected_index]);
+                            }    
+                            else
+                            {
+                                keyActions[key](new T());
+                            }
+                        }
                         break;
                         
                 }

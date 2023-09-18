@@ -60,49 +60,54 @@ namespace TECHCOOL.UI
             f.Options.Add(option,value);
         }
         
-        void processValue(string property_name, string value)
+        bool processValue(string property_name, string value)
         {
             var property = record.GetType().GetProperty(property_name);
             if (property == null ) 
             {
                 Console.WriteLine($"Form: No such property '{property_name}' on {record.GetType()}");
-                return;
+                return false;
             }
 
             if (typeof(string) == property.PropertyType) 
             {
                 property.SetValue(record,value);
+                return true;
             } 
             else if (typeof(int) == property.PropertyType)
             {
                 int v = 0;
                 int.TryParse(value, out v);
                 property.SetValue(record,v);
+                return true;
             }
             else if (typeof(float) == property.PropertyType)
             {
                 float v = 0;
                 float.TryParse(value, out v);
                 property.SetValue(record,v);
+                return true;
             }
             else if (typeof(double) == property.PropertyType)
             {
                 double v = 0;
                 double.TryParse(value, out v);
                 property.SetValue(record,v);
+                return true;
             }
             else if (typeof(decimal) == property.PropertyType)
             {
                 decimal v = 0;
                 decimal.TryParse(value, out v);
                 property.SetValue(record,v);
+                return true;
             }
-
-            //property.SetValue(record,)
+            return false;
         }
-        public void Edit(T record)  
+        public bool Edit(T record)  
         {
             this.record = record;
+            bool recordChanged = false;
             //Copy values from record into fields
 
             foreach (KeyValuePair<string,Field> kv in fields) 
@@ -132,7 +137,9 @@ namespace TECHCOOL.UI
                 {
                     case ConsoleKey.Enter:
                         fields[current_field].Enter();
-                        processValue(fields[current_field].Property, fields[current_field].Value.ToString());
+                        
+                        recordChanged = recordChanged || processValue(fields[current_field].Property, fields[current_field].Value.ToString());
+                        
                         break;
                     case ConsoleKey.DownArrow:
                         field_edit_index++;
@@ -141,7 +148,7 @@ namespace TECHCOOL.UI
                         field_edit_index--;
                         break;
                     case ConsoleKey.Escape:
-                        return;
+                        return recordChanged;
                 }
                 
             }
