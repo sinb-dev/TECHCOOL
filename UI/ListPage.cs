@@ -7,8 +7,13 @@ namespace TECHCOOL.UI
 {
     public class ListPage<T> where T : new()
     {
-        const char H_BORDER_CHARACTER = '-';
-        const char V_BORDER_CHARACTER = '|';
+        const char H_BORDER_CHARACTER = '─';
+        const char V_BORDER_CHARACTER = '│';
+        const char NW_CORNER = '┌';
+        const char NE_CORNER = '┐';
+        const char WEST_T = '├';
+        const char EAST_T = '┤';
+        const char CROSS = '┼';
         class Column {
             public string Title { get; set; }
             public string Property { get; set; }
@@ -86,15 +91,16 @@ namespace TECHCOOL.UI
             int total_width = getWidth();
             if (total_width < 2) return;
             
-            sb.Append(H_BORDER_CHARACTER+"".PadRight(total_width-2,H_BORDER_CHARACTER)+H_BORDER_CHARACTER);
+            sb.Append(NW_CORNER+"".PadRight(total_width-1,H_BORDER_CHARACTER)+NE_CORNER);
             sb.Append("\n"+V_BORDER_CHARACTER);
             foreach (KeyValuePair<string, Column> kv in columns) 
             {
                 int width = kv.Value.Width;
-                sb.AppendFormat("{0, "+width+"}{1}", kv.Value.Title, V_BORDER_CHARACTER);
+                sb.AppendFormat("{0, -"+width+"}{1}", kv.Value.Title, V_BORDER_CHARACTER);
             }
-            sb.Append("\n");
-            sb.Append("".PadRight(getWidth(),H_BORDER_CHARACTER));
+            sb.Append("\n"+WEST_T);
+            sb.Append("".PadRight(getWidth()-1,H_BORDER_CHARACTER));
+            sb.Append(EAST_T);
             Console.WriteLine(sb);
             sb.Clear();
             var i = 0;
@@ -112,8 +118,8 @@ namespace TECHCOOL.UI
                         var prop = r.GetType().GetProperty(kv.Value.Property);
                         var val = kv.Value.ValueProcessor(prop.GetValue(r));
 
-                        int width = kv.Value.Width;
-                        sb.AppendFormat("{0, "+width+"}{1}", val,V_BORDER_CHARACTER);
+                        int width = kv.Value.Width ;
+                        sb.AppendFormat("{0, -"+width+"}{1}", val,V_BORDER_CHARACTER);
                     } catch(NullReferenceException e) {
                         //Nooos
                         Console.WriteLine($"There is no property on class '{r.GetType()}' called '{kv.Value.Property}'\n"+e);

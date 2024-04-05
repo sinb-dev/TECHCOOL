@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TECHCOOL.UI
 {
@@ -102,6 +103,13 @@ namespace TECHCOOL.UI
                 property.SetValue(record,v);
                 return true;
             }
+            else if (property.PropertyType.IsEnum)
+            {
+                Enum enumType = property.GetValue(record) as Enum;
+                var v = TypeDescriptor.GetConverter(enumType).ConvertFrom(value);
+                property.SetValue(record, v);
+                return true;
+            }
             return false;
         }
         public bool Edit(T record)  
@@ -165,6 +173,7 @@ namespace TECHCOOL.UI
                 field.Focus = (i++ == field_edit_index); 
                 field.Draw(x,y++);
             }
+            Console.WriteLine();
         }
 
         int getLongestTitleLength() 
