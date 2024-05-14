@@ -146,7 +146,7 @@ namespace TECHCOOL.UI
                     case ConsoleKey.Enter:
                         fields[current_field].Enter();
                         
-                        recordChanged = recordChanged || processValue(fields[current_field].Property, fields[current_field].Value.ToString());
+                        recordChanged = processValue(fields[current_field].Property, fields[current_field].Value.ToString()) || recordChanged;
                         
                         break;
                     case ConsoleKey.DownArrow:
