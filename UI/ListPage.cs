@@ -11,9 +11,11 @@ namespace TECHCOOL.UI
         const char V_BORDER_CHARACTER = '│';
         const char NW_CORNER = '┌';
         const char NE_CORNER = '┐';
+        const char SW_CORNER = '└';
+        const char SE_CORNER = '┘';
         const char WEST_T = '├';
         const char EAST_T = '┤';
-        const char CROSS = '┼';
+        // const char CROSS = '┼';
         class Column {
             public string Title { get; set; }
             public string Property { get; set; }
@@ -85,44 +87,50 @@ namespace TECHCOOL.UI
         {
             return records.Remove(record);
         }
+
         public void Draw()
         {
             StringBuilder sb = new StringBuilder();
             int total_width = getWidth();
             if (total_width < 2) return;
-            
-            sb.Append(NW_CORNER+"".PadRight(total_width-1,H_BORDER_CHARACTER)+NE_CORNER);
-            sb.Append("\n"+V_BORDER_CHARACTER);
-            foreach (KeyValuePair<string, Column> kv in columns) 
+
+            string H_LINE = "".PadRight(total_width - 2, H_BORDER_CHARACTER);
+
+            sb.Append(NW_CORNER + H_LINE + NE_CORNER + Environment.NewLine);
+            sb.Append(V_BORDER_CHARACTER);
+            foreach (KeyValuePair<string, Column> kv in columns)
             {
                 int width = kv.Value.Width;
-                sb.AppendFormat("{0, -"+width+"}{1}", kv.Value.Title, V_BORDER_CHARACTER);
+                sb.AppendFormat("{0, -" + width + "}{1}", kv.Value.Title, V_BORDER_CHARACTER);
             }
-            sb.Append("\n"+WEST_T);
-            sb.Append("".PadRight(getWidth()-1,H_BORDER_CHARACTER));
-            sb.Append(EAST_T);
+            sb.Append(Environment.NewLine);
+            sb.Append(WEST_T + H_LINE + EAST_T);
             Console.WriteLine(sb);
             sb.Clear();
             var i = 0;
-            foreach (T r in records) {
+            foreach (T r in records)
+            {
                 if (select && selected_index == i++)
                 {
                     Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                
+
                 sb.Append(V_BORDER_CHARACTER);
-                foreach (KeyValuePair<string, Column> kv in columns) 
+                foreach (KeyValuePair<string, Column> kv in columns)
                 {
-                    try {
+                    try
+                    {
                         var prop = r.GetType().GetProperty(kv.Value.Property);
                         var val = kv.Value.ValueProcessor(prop.GetValue(r));
 
-                        int width = kv.Value.Width ;
-                        sb.AppendFormat("{0, -"+width+"}{1}", val,V_BORDER_CHARACTER);
-                    } catch(NullReferenceException e) {
+                        int width = kv.Value.Width;
+                        sb.AppendFormat("{0, -" + width + "}{1}", val, V_BORDER_CHARACTER);
+                    }
+                    catch (NullReferenceException e)
+                    {
                         //Nooos
-                        Console.WriteLine($"There is no property on class '{r.GetType()}' called '{kv.Value.Property}'\n"+e);
+                        Console.WriteLine($"There is no property on class '{r.GetType()}' called '{kv.Value.Property}'\n" + e);
                     }
                 }
                 Console.WriteLine(sb);
@@ -130,10 +138,11 @@ namespace TECHCOOL.UI
                 Console.ForegroundColor = ConsoleColor.White;
                 sb.Clear();
             }
-            sb.Append("".PadRight(getWidth(),H_BORDER_CHARACTER));
+            sb.Append(SW_CORNER + H_LINE + SE_CORNER);
             Console.WriteLine(sb.ToString());
             Console.SetCursorPosition(0, selected_index);
         }
+
         public int getWidth() {
             int width = columns.Count + 1; //Include borders in with.
             foreach (KeyValuePair<string, Column> kv in columns) 
