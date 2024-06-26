@@ -138,7 +138,7 @@ namespace TECHCOOL.UI
             do
             {
                 Console.SetCursorPosition(x,y);
-                Math.Clamp(field_edit_index, 0, fields.Count-1);
+                field_edit_index = Math.Clamp(field_edit_index, 0, fields.Count-1);
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)
