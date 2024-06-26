@@ -50,7 +50,7 @@ namespace TECHCOOL.UI
             do
             {
                 Console.SetCursorPosition(x,y);
-                Screen.Clear(screen);
+                Screen.Clear();
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)

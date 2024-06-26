@@ -26,7 +26,7 @@ namespace TECHCOOL.UI
             ConsoleKey key;
             do
             {
-                Clear(screen_stack.Peek());
+                Clear();
                 keyActions = new();
                 screen_stack.Peek().Draw();
                 if (screen.quit)
@@ -56,11 +56,7 @@ namespace TECHCOOL.UI
             Console.BackgroundColor = FocusBackground;
             Console.ForegroundColor = FocusForeground;
         }
-        public static void Clear(Screen screen)
-        {
-            fastClear();
-            Console.WriteLine(string.Format("==={0}===", Screen.BreadCrumbs));
-        }
+
         static void fastClear()
         {
             Console.SetCursorPosition(0, 0);
@@ -73,11 +69,14 @@ namespace TECHCOOL.UI
         public static void Clear()
         {
             ColorDefault();
-            Clear(screen_stack.Peek());
+            fastClear();
+            Console.WriteLine(string.Format("==={0}===", Screen.BreadCrumbs));
         }
         public void Quit()
         {
             quit = true;
+            screen_stack.Pop();
+            Clear();
         }
 
         public void AddKey(ConsoleKey key, Action callback)
