@@ -1,124 +1,81 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace TECHCOOL.UI
 {
     public class Form<T>
     {
-        
         T record;
         Dictionary<string, Field> fields = new();
         int field_edit_index = 0;
-        string current_field { get {
-            int i = 0;
-            string title = "";
-            foreach (KeyValuePair<string,Field> kv in fields) 
+        string current_field
+        {
+            get
             {
-                if (i == field_edit_index)
+                int i = 0;
+                string title = "";
+                foreach (KeyValuePair<string, Field> kv in fields)
                 {
-                    title = kv.Key;
-                    break;
+                    if (i == field_edit_index)
+                    {
+                        title = kv.Key;
+                        break;
+                    }
+                    i++;
                 }
-                i++;
-            }
-            return title;
+                return title;
             }
         }
 
-        public Form<T> TextBox(string title, string property) 
+        public void AddField(string title, Field field)
         {
-            fields.Add(title, new TextBox { Title = title, Property = property});
+            fields.Add(title, field);
+        }
+
+        public Form<T> TextBox(string title, string property)
+        {
+            fields.Add(title, new TextBox { Title = title, Property = property });
             return this;
         }
-        public Form<T> IntBox(string title, string property) 
+        public Form<T> IntBox(string title, string property)
         {
-            fields.Add(title, new IntBox { Title = title, Property = property});
+            fields.Add(title, new IntBox { Title = title, Property = property });
             return this;
         }
-        public Form<T> DoubleBox(string title, string property) 
+        public Form<T> DoubleBox(string title, string property)
         {
-            fields.Add(title, new DoubleBox { Title = title, Property = property});
+            fields.Add(title, new DoubleBox { Title = title, Property = property });
             return this;
         }
-        public Form<T> SelectBox(string title, string property, Dictionary<string,object> options=null) 
+        public Form<T> SelectBox(string title, string property, Dictionary<string, object> options = null)
         {
             if (options == null) options = new();
-            fields.Add(title, new SelectBox { Title = title, Property = property, Options = options});
+            fields.Add(title, new SelectBox { Title = title, Property = property, Options = options });
             return this;
         }
         public void AddOption(string field, string option, object value)
         {
-            if (!fields.ContainsKey(field)) 
+            if (!fields.ContainsKey(field))
             {
-                throw new Exception("There is no such field in this form called "+field);
+                throw new Exception("There is no such field in this form called " + field);
             }
             if (!(fields[field] is SelectBox))
             {
-                throw new Exception("Field "+field+" is not a SelectBox");
+                throw new Exception("Field " + field + " is not a SelectBox");
             }
-            var f = (SelectBox) fields[field];
-            f.Options.Add(option,value);
+            var f = (SelectBox)fields[field];
+            f.Options.Add(option, value);
         }
-        
-        bool processValue(string property_name, string value)
-        {
-            var property = record.GetType().GetProperty(property_name);
-            if (property == null ) 
-            {
-                Console.WriteLine($"Form: No such property '{property_name}' on {record.GetType()}");
-                return false;
-            }
 
-            if (typeof(string) == property.PropertyType) 
-            {
-                property.SetValue(record,value);
-                return true;
-            } 
-            else if (typeof(int) == property.PropertyType)
-            {
-                int v = 0;
-                int.TryParse(value, out v);
-                property.SetValue(record,v);
-                return true;
-            }
-            else if (typeof(float) == property.PropertyType)
-            {
-                float v = 0;
-                float.TryParse(value, out v);
-                property.SetValue(record,v);
-                return true;
-            }
-            else if (typeof(double) == property.PropertyType)
-            {
-                double v = 0;
-                double.TryParse(value, out v);
-                property.SetValue(record,v);
-                return true;
-            }
-            else if (typeof(decimal) == property.PropertyType)
-            {
-                decimal v = 0;
-                decimal.TryParse(value, out v);
-                property.SetValue(record,v);
-                return true;
-            }
-            else if (property.PropertyType.IsEnum)
-            {
-                Enum enumType = property.GetValue(record) as Enum;
-                var v = TypeDescriptor.GetConverter(enumType).ConvertFrom(value);
-                property.SetValue(record, v);
-                return true;
-            }
-            return false;
-        }
-        public bool Edit(T record)  
+        public bool Edit(T record)
         {
             this.record = record;
             bool recordChanged = false;
             //Copy values from record into fields
 
-            foreach (KeyValuePair<string,Field> kv in fields) 
+            foreach (KeyValuePair<string, Field> kv in fields)
             {
                 var field = kv.Value;
                 var prop = record.GetType().GetProperty(field.Property);
@@ -127,27 +84,42 @@ namespace TECHCOOL.UI
                     throw new($"Form cannot edit: There is no property named '{field.Property}' in class '{record.GetType()}");
                 }
                 var value = prop.GetValue(record);
-                if (value != null) {
+                if (value != null)
+                {
                     field.Value = value;
                 }
             }
 
-            int x,y;
-            (x,y) = Console.GetCursorPosition();
+            int x, y;
+            (x, y) = Console.GetCursorPosition();
             ConsoleKeyInfo key;
             do
             {
-                Console.SetCursorPosition(x,y);
-                field_edit_index = Math.Clamp(field_edit_index, 0, fields.Count-1);
+                Console.SetCursorPosition(x, y);
+                field_edit_index = Math.Clamp(field_edit_index, 0, fields.Count - 1);
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)
                 {
                     case ConsoleKey.Enter:
                         fields[current_field].Enter();
-                        
-                        recordChanged = processValue(fields[current_field].Property, fields[current_field].Value.ToString()) || recordChanged;
-                        
+
+                        string property_name = fields[current_field].Property;
+                        object property_value = fields[current_field].Value;
+
+                        PropertyInfo property = record.GetType().GetProperty(property_name);
+                        if (property == null)
+                        {
+                            Console.WriteLine($"Form: No such property '{property_name}' on {record.GetType()}");
+                            return false;
+                        }
+
+                        if (property.GetValue(record) != property_value)
+                        {
+                            property.SetValue(record, property_value);
+                            recordChanged = true;
+                        }
+
                         break;
                     case ConsoleKey.DownArrow:
                         field_edit_index++;
@@ -158,183 +130,188 @@ namespace TECHCOOL.UI
                     case ConsoleKey.Escape:
                         return recordChanged;
                 }
-                
+
             }
             while (true);
         }
-        protected void Draw() 
+        protected void Draw()
         {
-            int x,y;
-            (x,y) = Console.GetCursorPosition();
+            int x, y;
+            (x, y) = Console.GetCursorPosition();
             int i = 0;
-            foreach (KeyValuePair<string,Field> kv in fields) 
+            foreach (KeyValuePair<string, Field> kv in fields)
             {
                 Field field = kv.Value;
-                field.Focus = (i++ == field_edit_index); 
-                field.Draw(x,y++);
+                field.Focus = (i++ == field_edit_index);
+                field.Draw(x, y++);
             }
             Console.WriteLine();
         }
 
-        int getLongestTitleLength() 
+        int getLongestTitleLength()
         {
             int longest = 0;
-            foreach (KeyValuePair<string,Field> kv in fields) 
+            foreach (KeyValuePair<string, Field> kv in fields)
             {
                 Field field = kv.Value;
-                longest = Math.Max(field.Title.Length,longest);
+                longest = Math.Max(field.Title.Length, longest);
             }
             return longest;
         }
     }
-    public abstract class Field {
+    public abstract class Field
+    {
         public string Title { get; set; }
         public string Property { get; set; }
         public abstract object Value { get; set; }
-        public bool Focus {get; set;}
-        public int FieldWidth {get;set;} = 20;
-        public int LabelWidth {get;set;} = 20;
+        public bool Focus { get; set; }
+        public int FieldWidth { get; set; } = 20;
+        public int LabelWidth { get; set; } = 20;
         public abstract void Draw(int left, int top);
         public abstract void Enter();
 
     }
+
+
     public class TextBox : Field
     {
         string value;
-        public override object Value { get {return value;} set { this.value = value.ToString();}}
-        int left = 0;
-        int top = 0;
-        
-        public override void Enter() 
+        public override object Value { get { return value; } set { this.value = value.ToString(); } }
+        protected int left = 0;
+        protected int top = 0;
+
+        public virtual bool Validate(String input)
         {
-            Console.SetCursorPosition(left+LabelWidth,top);
+            // Textbox accepts everything, override to limit input
+            return true;
+        }
+        public override void Enter()
+        {
+            bool ok;
+            string input;
             Console.CursorVisible = true;
-            Screen.ColorFocus();
-            Value = Console.ReadLine();
+            
+            Console.SetCursorPosition(left + LabelWidth, top);
+            Screen.ColorEdit();
+            Console.WriteLine(Value);
+            do
+            {
+                Console.SetCursorPosition(left + LabelWidth, top);
+                input = Console.ReadLine();
+                ok = Validate(input);
+                if (!ok)
+                {
+                    Console.SetCursorPosition(left + LabelWidth, top);
+                    Screen.ColorError();
+                    Console.WriteLine(input);
+                }
+            } while (!ok);
+            Value = input;
             Console.CursorVisible = false;
             Screen.ColorDefault();
         }
-        public override void Draw(int left, int top) {
+        public override void Draw(int left, int top)
+        {
             this.left = left;
             this.top = top;
-            Console.SetCursorPosition(left,top);
-            Console.Write("{0,-"+LabelWidth+"}", Title);
+            Console.SetCursorPosition(left, top);
+            Console.Write("{0,-" + LabelWidth + "}", Title);
             if (Focus)
                 Screen.ColorFocus();
             else
                 Screen.ColorField();
 
-            
-            Console.Write($"{{0,-{FieldWidth}}}",Value);
+
+            Console.Write($"{{0,-{FieldWidth}}}", this);
             Screen.ColorDefault();
         }
+
+        public override string ToString()
+        {
+            return value==null ? "" : value.ToString();
+        }
+
     }
     public class IntBox : TextBox
     {
         int value;
-        public override object Value { get {return value;} set { int.TryParse(value.ToString(), out this.value); }}
-        int left = 0;
-        int top = 0;
-        
-        public override void Enter() 
+        public override object Value
         {
-            Console.SetCursorPosition(left+LabelWidth,top);
-            Console.CursorVisible = true;
-            Screen.ColorFocus();
-            string input = Console.ReadLine();
-            int.TryParse(input, out value);
-            
-            Console.CursorVisible = false;
-            Screen.ColorDefault();
+            get => value;
+            set
+            {
+                int.TryParse(value.ToString(), out this.value);
+            }
         }
-        public override void Draw(int left, int top) {
-            this.left = left;
-            this.top = top;
-            Console.SetCursorPosition(left,top);
-            Console.Write("{0,-"+LabelWidth+"}", Title);
-            if (Focus)
-                Screen.ColorFocus();
-            else
-                Screen.ColorField();
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+        public override bool Validate(String input)
+        {
+            return int.TryParse(input.ToString(), out _);
+        }
 
-            
-            Console.Write($"{{0,-{FieldWidth}}}",Value);
-            Screen.ColorDefault();
-        }
     }
+
     public class DoubleBox : TextBox
     {
-        int value;
-        public override object Value { get {return value;} set { int.TryParse(value.ToString(), out this.value); }}
-        int left = 0;
-        int top = 0;
-        
-        public override void Enter() 
+        double value;
+        public override object Value
         {
-            Console.SetCursorPosition(left+LabelWidth,top);
-            Console.CursorVisible = true;
-            Screen.ColorFocus();
-            string input = Console.ReadLine();
-            int.TryParse(input, out value);
-            
-            Console.CursorVisible = false;
-            Screen.ColorDefault();
+            get => value;
+            set
+            {
+                double.TryParse(value.ToString(), out this.value);
+            }
         }
-        public override void Draw(int left, int top) {
-            this.left = left;
-            this.top = top;
-            Console.SetCursorPosition(left,top);
-            Console.Write("{0,-"+LabelWidth+"}", Title);
-            if (Focus)
-                Screen.ColorFocus();
-            else
-                Screen.ColorField();
+        public override string ToString()
+        {
+            return value.ToString();
+        }
 
-            
-            Console.Write($"{{0,-{FieldWidth}}}",Value);
-            Screen.ColorDefault();
-        }
     }
+
     public class SelectBox : Field
     {
         object value;
-        public override object Value { get {return value;} set { this.value = value; }}
-        public Dictionary<string,object> Options = new();
+        public override object Value { get { return value; } set { this.value = value; } }
+        public Dictionary<string, object> Options = new();
         int left = 0;
         int top = 0;
         int index = 0;
-        public override void Enter() 
+        public override void Enter()
         {
-            
-
-            
             bool stop = false;
             object currentValue = value;
-            Func<int,object> valueByIndex = (idx) => {
+            Func<int, object> valueByIndex = (idx) =>
+            {
                 int ii = 0;
-                foreach(KeyValuePair<string,object> kv in Options) {
+                foreach (KeyValuePair<string, object> kv in Options)
+                {
                     if (ii++ == idx) return kv.Value;
                 }
                 return null;
             };
-            do {
+            do
+            {
                 int i = 0;
-            
-                foreach(KeyValuePair<string, object> kv in Options)
+
+                foreach (KeyValuePair<string, object> kv in Options)
                 {
-                    Console.SetCursorPosition(left+LabelWidth,top+1+i);
+                    Console.SetCursorPosition(left + LabelWidth, top + 1 + i);
                     if (i == index)
                         Screen.ColorFocus();
                     else
                         Screen.ColorDefault();
 
-                    Console.Write("{0,"+FieldWidth+"}", kv.Key);
+                    Console.Write("{0," + FieldWidth + "}", kv.Key);
                     i++;
                 }
 
 
                 ConsoleKey key = Console.ReadKey().Key;
-                index = Math.Clamp(index, 0, Options.Count-1);
+                index = Math.Clamp(index, 0, Options.Count - 1);
                 switch (key)
                 {
                     case ConsoleKey.Enter:
@@ -353,23 +330,24 @@ namespace TECHCOOL.UI
                         stop = true;
                         break;
                 }
-            } while(!stop);
-            
+            } while (!stop);
+
             Console.CursorVisible = false;
             Screen.ColorDefault();
         }
-        public override void Draw(int left, int top) {
+        public override void Draw(int left, int top)
+        {
             this.left = left;
             this.top = top;
-            Console.SetCursorPosition(left,top);
-            Console.Write("{0,-"+LabelWidth+"}", Title);
+            Console.SetCursorPosition(left, top);
+            Console.Write("{0,-" + LabelWidth + "}", Title);
             if (Focus)
                 Screen.ColorFocus();
             else
                 Screen.ColorField();
 
-            
-            Console.Write($"{{0,-{FieldWidth}}}",Value);
+
+            Console.Write($"{{0,-{FieldWidth}}}", Value);
             Screen.ColorDefault();
         }
     }

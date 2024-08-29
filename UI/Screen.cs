@@ -14,8 +14,12 @@ namespace TECHCOOL.UI
         public static ConsoleColor DefaultBackground = ConsoleColor.Black;
         public static ConsoleColor FocusForeground = ConsoleColor.Black;
         public static ConsoleColor FocusBackground = ConsoleColor.White;
+        public static ConsoleColor EditForeground = ConsoleColor.Black;
+        public static ConsoleColor EditBackground = ConsoleColor.White;
         public static ConsoleColor FieldForeground = ConsoleColor.White;
         public static ConsoleColor FieldBackground = ConsoleColor.DarkGray;
+        public static ConsoleColor ErrorForeground = ConsoleColor.Red;
+        public static ConsoleColor ErrorBackground = ConsoleColor.Gray;
         static Stack<Screen> screen_stack = new();
         static Dictionary<ConsoleKey, Action> keyActions = new();
         private bool quit = false;
@@ -56,6 +60,16 @@ namespace TECHCOOL.UI
             Console.BackgroundColor = FocusBackground;
             Console.ForegroundColor = FocusForeground;
         }
+        public static void ColorError()
+        {
+            Console.BackgroundColor = ErrorBackground;
+            Console.ForegroundColor = ErrorForeground;
+        }
+        public static void ColorEdit()
+        {
+            Console.BackgroundColor = EditBackground;
+            Console.ForegroundColor = EditForeground;
+        }
 
         static void fastClear()
         {
@@ -77,6 +91,8 @@ namespace TECHCOOL.UI
             quit = true;
             screen_stack.Pop();
             Clear();
+            if (screen_stack.TryPeek(out _))
+                screen_stack.Peek().Draw();
         }
 
         public void AddKey(ConsoleKey key, Action callback)

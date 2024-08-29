@@ -1,5 +1,4 @@
 using System;
-using TECHCOOL.UI;
 using System.Collections.Generic;
 using System.Text;
 
@@ -75,6 +74,11 @@ namespace TECHCOOL.UI
             records.Add(record);
             return this;
         }
+        public void Clear()
+        {
+            records.Clear();
+        }
+
         public ListPage<T> Add(IEnumerable<T> record) 
         { 
             IEnumerator<T> e = record.GetEnumerator();
@@ -112,8 +116,10 @@ namespace TECHCOOL.UI
             {
                 if (select && selected_index == i++)
                 {
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    //                    Console.BackgroundColor = ConsoleColor.Gray;
+                    //                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = Screen.FocusBackground;
+                    Console.ForegroundColor = Screen.FocusForeground;
                 }
 
                 sb.Append(V_BORDER_CHARACTER);
@@ -134,8 +140,8 @@ namespace TECHCOOL.UI
                     }
                 }
                 Console.WriteLine(sb);
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = Screen.DefaultBackground;
+                Console.ForegroundColor = Screen.DefaultForeground;
                 sb.Clear();
             }
             sb.Append(SW_CORNER + H_LINE + SE_CORNER);
