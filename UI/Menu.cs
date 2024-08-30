@@ -32,12 +32,12 @@ namespace TECHCOOL.UI
             {
                 if (index == i)
                 {
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = Screen.FocusBackground;
+                    Console.ForegroundColor = Screen.FocusForeground;
                 }
                 Console.WriteLine($"{i+1}. {screens[i].Title}");
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = Screen.DefaultBackground;
+                Console.ForegroundColor = Screen.DefaultForeground;
             }
         }
 
@@ -50,7 +50,7 @@ namespace TECHCOOL.UI
             do
             {
                 Console.SetCursorPosition(x,y);
-                Screen.Clear(screen);
+                Screen.Clear();
                 Draw();
                 key = Console.ReadKey();
                 switch (key.Key)
