@@ -246,6 +246,28 @@ public class EditTodoScreen : Screen
     }
 ```
 
+### Tilføj keybindings
+
+Det er muligt på en ListPage at tilføje keybindings, som vil virke når vi kalder "Select()", udover PIL-op/ned ENTER.
+
+
+```C#
+    listPage.AddKey(ConsoleKey.F12, ShowHelp);
+    Console.WriteLine("Press F12 to show help");
+```
+
+Ovenståede tilføjer en keybinding til F12 og kalder funktionen ShowHelp, når brugeren trykker F12. For at få det til at virke, skal vi også tilføje den funktion som bliver kaldt.
+
+```C#
+
+        void ShowHelp(Todo _)
+        {
+                Screen.Display(new HelpScreen());
+        }
+```
+
+I ovenstående eksempel er vi ligeglade med hvilket Todo item listen stod på da vi trykkede F12. Derfor giver vi blot argumentet navnet "_". Hvis vi ønsker at bruge det enkelte item, kan vi give det et navn og bruge det i funktionen.
+
 
 ## Lav en menu
 Menuer er en samling af skærme (Screens), som den lader brugeren vælge imellem. Vi tager udgangspunkt i de tre skærme vi har lavet i denne guide.
