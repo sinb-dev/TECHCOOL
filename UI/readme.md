@@ -227,6 +227,26 @@ public class EditTodoScreen : Screen
     }
 ```
 
+## Tilpasning af farver
+
+Ønsker man at tilpasse flere skærme, så de f.eks. få et bestemt farve-tema, kan man lave en fælles basis-klasse, som skærmene arver fra. Prøv at tilføje følgende klasse til dit projekt, og lad dine øvrige skærme nedarve fra ColorScreen i stedet for blot Screen.
+
+```C#
+   public abstract class ColorScreen : Screen
+    {
+        public ColorScreen() : base()
+        {
+            DefaultForeground = ConsoleColor.Yellow;
+            DefaultBackground = ConsoleColor.Blue;
+            FocusForeground = ConsoleColor.Green;
+            FocusBackground = ConsoleColor.Cyan;
+            FieldForeground = ConsoleColor.White;
+            FieldBackground = ConsoleColor.DarkGray;
+        }
+    }
+```
+
+
 ## Lav en menu
 Menuer er en samling af skærme (Screens), som den lader brugeren vælge imellem. Vi tager udgangspunkt i de tre skærme vi har lavet i denne guide.
 * MyFirstScreen
