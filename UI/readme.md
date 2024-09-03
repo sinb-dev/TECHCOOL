@@ -11,7 +11,7 @@ public class MyFirstScreen : Screen
 	public override string Title { get; set; } = "My first screen"; 
 	protected override void Draw()
 	{
-		Clear(this);
+		Clear();
 		Console.WriteLine("My first screen!");
 	}
 }
@@ -59,7 +59,7 @@ public class TodoListScreen : Screen
 	public override string Title { get; set; } = "List of tasks to do"; 
 	protected override void Draw()
 	{
-	  Clear(this); //Clean the screen
+	  Clear(); //Clean the screen
 		//Gonna draw a list page here
 	}
 }
@@ -85,7 +85,7 @@ Her konfigureres listen til at vise én kolonne. Øverst i listen vil der stå "
 6. Tegn listen
 Listen kan blive tegnet på skærmen gennem metoden Draw(). 
 ```C#
-Clear(this); //Clean the screen
+Clear(); //Clean the screen
 ListPage<Todo> listPage = new ListPage<Todo>();
 listPage.Add(new Todo("Buy milk"));
 listPage.Add(new Todo("Walk the dog", 2));
@@ -126,7 +126,7 @@ Dette gør listen interaktiv og lader brugeren vælge en fra listen.
         {
 	    do
 	    {
-                 Clear(this); //Clean the screen
+                 Clear(); //Clean the screen
 		 ListPage<Todo> listPage = new ListPage<Todo>();
                  listPage.Add(new Todo("Buy milk"));
                  listPage.Add(new Todo("Walk the dog", 2));
@@ -149,8 +149,8 @@ Dette gør listen interaktiv og lader brugeren vælge en fra listen.
     }
 ```
 
-## Redigering af klasse
-Denne guide viser hvordan du kan redigere en klasse ved hjælp af TECHCOOL konsol UI. Guiden tager udgangspunkt i samme klasse som guiden "Opret en liste", nemlig Todo klassen
+## Redigering af objekter
+Denne guide viser hvordan du kan redigere et objekt ved hjælp af TECHCOOL konsol UI. Guiden tager udgangspunkt i samme klasse som guiden "Opret en liste", nemlig Todo klassen
 ```C#
 public class Todo
 {
@@ -174,7 +174,7 @@ public class EditTodoScreen : Screen
 	public override string Title { get; set; } = "Edit todo"; 
 	protected override void Draw()
 	{
-		Clear(this); //Clean the screen
+		Clear(); //Clean the screen
 		Todo todo = new Todo("New todo");
 		
 		//Gonna edit a todo
@@ -209,7 +209,7 @@ public class EditTodoScreen : Screen
         public override string Title { get; set; } = "Edit todo"; 
         protected override void Draw()
         {
-            Clear(this); //Clean the screen
+            Clear(); //Clean the screen
             Todo todo = new Todo("New todo");
 
             Form<Todo> editor = new Form<Todo>();
@@ -221,7 +221,7 @@ public class EditTodoScreen : Screen
             editor.AddOption("Progress", "Complete", Todo.TodoState.Done);
             editor.Edit(todo);
 
-            Clear(this);
+            Clear();
             Console.WriteLine($"Todo {todo.Title} is {todo.State}");
         }
     }
