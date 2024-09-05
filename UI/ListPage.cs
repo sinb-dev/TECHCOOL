@@ -14,13 +14,15 @@ namespace TECHCOOL.UI
         const char SE_CORNER = '┘';
         const char WEST_T = '├';
         const char EAST_T = '┤';
-        // const char CROSS = '┼';
-        class Column {
+
+        class Column
+        {
             public string Title { get; set; }
-            public string Property { get; set; }
             public int Width { get; set; }
-            public Func<object,string> ValueProcessor { get; set;}
+            public Func<T, object> PropertySelector { get; set; }
+            public Func<object, string> ValueProcessor { get; set; }
         }
+
         Dictionary<string, Column> columns = new();
         Dictionary<ConsoleKey, Action<T>> keyActions = new();
         List<T> records = new();
@@ -39,27 +41,19 @@ namespace TECHCOOL.UI
             if (selected_index >= records.Count) selected_index = 0;
         }
 
-        public ListPage<T> AddColumn(string title, string property, int width = 15, Func<object,string> valueProcessor =null) 
+        // New version of AddColumn using property selectors
+        public ListPage<T> AddColumn(string title, Func<T, object> propertySelector, int width = 15, Func<object, string> valueProcessor = null)
         {
-            if (string.IsNullOrWhiteSpace(property)) {
-                Console.WriteLine("ListPage: Adding column with title '"+title+"' has an invalid property!");
+            if (propertySelector == null)
+            {
+                Console.WriteLine($"ListPage: Adding column with title '{title}' has an invalid property selector!");
                 return this;
             }
             if (valueProcessor == null)
-                valueProcessor = (o) => (o!= null) ? o.ToString() : "";
-            columns[property] = new Column { Title = title, Property = property, Width = width, ValueProcessor = valueProcessor };
-            return this;
-        }
-        public ListPage<T> AddColumn(string title, string property, int width, string format) 
-        {
-            if (string.IsNullOrWhiteSpace(property)) {
-                Console.WriteLine("ListPage: Adding column with title '"+title+"' has an invalid property!");
-                return this;
-            }
-            if (format == null) format = ","+width;
-            else if (format.Substring(0,1) != ":" && format.Substring(0,1) != ",") format = ","+format;
-            Func<object,string> valueProcessor = (o) => string.Format("{0"+format+"}",o);
-            columns[property] = new Column { Title = title, Property = property, Width = width, ValueProcessor = valueProcessor };
+                valueProcessor = (o) => (o != null) ? o.ToString() : "";
+
+            // Add column with the property selector (lambda) instead of string property
+            columns[title] = new Column { Title = title, PropertySelector = propertySelector, Width = width, ValueProcessor = valueProcessor };
             return this;
         }
 
@@ -69,24 +63,27 @@ namespace TECHCOOL.UI
             return this;
         }
 
-        public ListPage<T> Add(T record) 
-        { 
+        public ListPage<T> Add(T record)
+        {
             records.Add(record);
             return this;
         }
+
         public void Clear()
         {
             records.Clear();
         }
 
-        public ListPage<T> Add(IEnumerable<T> record) 
-        { 
+        public ListPage<T> Add(IEnumerable<T> record)
+        {
             IEnumerator<T> e = record.GetEnumerator();
-            while (e.MoveNext()) {
+            while (e.MoveNext())
+            {
                 records.Add(e.Current);
             }
             return this;
         }
+
         public bool Remove(T record)
         {
             return records.Remove(record);
@@ -102,7 +99,7 @@ namespace TECHCOOL.UI
 
             sb.Append(NW_CORNER + H_LINE + NE_CORNER + Environment.NewLine);
             sb.Append(V_BORDER_CHARACTER);
-            foreach (KeyValuePair<string, Column> kv in columns)
+            foreach (var kv in columns)
             {
                 int width = kv.Value.Width;
                 sb.AppendFormat("{0, -" + width + "}{1}", kv.Value.Title, V_BORDER_CHARACTER);
@@ -116,27 +113,24 @@ namespace TECHCOOL.UI
             {
                 if (select && selected_index == i++)
                 {
-                    //                    Console.BackgroundColor = ConsoleColor.Gray;
-                    //                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = Screen.FocusBackground;
                     Console.ForegroundColor = Screen.FocusForeground;
                 }
 
                 sb.Append(V_BORDER_CHARACTER);
-                foreach (KeyValuePair<string, Column> kv in columns)
+                foreach (var kv in columns)
                 {
                     try
                     {
-                        var prop = r.GetType().GetProperty(kv.Value.Property);
-                        var val = kv.Value.ValueProcessor(prop.GetValue(r));
+                        var value = kv.Value.PropertySelector(r);
+                        var val = kv.Value.ValueProcessor(value);
 
                         int width = kv.Value.Width;
                         sb.AppendFormat("{0, -" + width + "}{1}", val, V_BORDER_CHARACTER);
                     }
-                    catch (NullReferenceException e)
+                    catch (Exception e)
                     {
-                        //Nooos
-                        Console.WriteLine($"There is no property on class '{r.GetType()}' called '{kv.Value.Property}'\n" + e);
+                        Console.WriteLine($"Error processing column '{kv.Value.Title}': {e.Message}");
                     }
                 }
                 Console.WriteLine(sb);
@@ -149,24 +143,25 @@ namespace TECHCOOL.UI
             Console.SetCursorPosition(0, selected_index);
         }
 
-        public int getWidth() {
-            int width = columns.Count + 1; //Include borders in with.
-            foreach (KeyValuePair<string, Column> kv in columns) 
+        public int getWidth()
+        {
+            int width = columns.Count + 1;
+            foreach (var kv in columns)
             {
                 width += kv.Value.Width;
             }
             return width;
         }
 
-        public T Select() {
-
+        public T Select()
+        {
             select = true;
             ConsoleKey key;
-            int x,y;
-            (x,y) = Console.GetCursorPosition();
+            int x, y;
+            (x, y) = Console.GetCursorPosition();
             do
             {
-                Console.SetCursorPosition(x,y);
+                Console.SetCursorPosition(x, y);
                 Draw();
                 key = Console.ReadKey().Key;
                 switch (key)
@@ -182,23 +177,21 @@ namespace TECHCOOL.UI
                         Up();
                         break;
                     default:
-                        if (keyActions.ContainsKey(key)) {
-                            if (records.Count > 0 && records.Contains(records[selected_index])) 
+                        if (keyActions.ContainsKey(key))
+                        {
+                            if (records.Count > 0 && records.Contains(records[selected_index]))
                             {
                                 keyActions[key](records[selected_index]);
-                            }    
+                            }
                             else
                             {
                                 keyActions[key](new T());
                             }
                         }
                         break;
-                        
                 }
-                
-            }
-            while (true);
+
+            } while (true);
         }
     }
 }
-
