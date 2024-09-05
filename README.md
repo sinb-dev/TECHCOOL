@@ -1,5 +1,5 @@
-# TECHCOOL
-These are tools and libraries used by programming students of TECHCOLLEGE
+# Custom TECHCOOL
+A specialized fork of Techcool, tailored to implement custom features and enhancements, addressing specific requirements and optimizations.
 
 # WebLet
 A thin in-app webserver that can be bundle with a program to allow communication throw a webbrowser
