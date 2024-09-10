@@ -11,7 +11,7 @@ public class MyFirstScreen : Screen
 	public override string Title { get; set; } = "My first screen"; 
 	protected override void Draw()
 	{
-		Clear(this);
+		Clear();
 		Console.WriteLine("My first screen!");
 	}
 }
@@ -59,7 +59,7 @@ public class TodoListScreen : Screen
 	public override string Title { get; set; } = "List of tasks to do"; 
 	protected override void Draw()
 	{
-	  Clear(this); //Clean the screen
+	  Clear(); //Clean the screen
 		//Gonna draw a list page here
 	}
 }
@@ -85,7 +85,7 @@ Her konfigureres listen til at vise én kolonne. Øverst i listen vil der stå "
 6. Tegn listen
 Listen kan blive tegnet på skærmen gennem metoden Draw(). 
 ```C#
-Clear(this); //Clean the screen
+Clear(); //Clean the screen
 ListPage<Todo> listPage = new ListPage<Todo>();
 listPage.Add(new Todo("Buy milk"));
 listPage.Add(new Todo("Walk the dog", 2));
@@ -126,7 +126,7 @@ Dette gør listen interaktiv og lader brugeren vælge en fra listen.
         {
 	    do
 	    {
-                 Clear(this); //Clean the screen
+                 Clear(); //Clean the screen
 		 ListPage<Todo> listPage = new ListPage<Todo>();
                  listPage.Add(new Todo("Buy milk"));
                  listPage.Add(new Todo("Walk the dog", 2));
@@ -149,8 +149,8 @@ Dette gør listen interaktiv og lader brugeren vælge en fra listen.
     }
 ```
 
-## Redigering af klasse
-Denne guide viser hvordan du kan redigere en klasse ved hjælp af TECHCOOL konsol UI. Guiden tager udgangspunkt i samme klasse som guiden "Opret en liste", nemlig Todo klassen
+## Redigering af objekter
+Denne guide viser hvordan du kan redigere et objekt ved hjælp af TECHCOOL konsol UI. Guiden tager udgangspunkt i samme klasse som guiden "Opret en liste", nemlig Todo klassen
 ```C#
 public class Todo
 {
@@ -174,7 +174,7 @@ public class EditTodoScreen : Screen
 	public override string Title { get; set; } = "Edit todo"; 
 	protected override void Draw()
 	{
-		Clear(this); //Clean the screen
+		Clear(); //Clean the screen
 		Todo todo = new Todo("New todo");
 		
 		//Gonna edit a todo
@@ -209,7 +209,7 @@ public class EditTodoScreen : Screen
         public override string Title { get; set; } = "Edit todo"; 
         protected override void Draw()
         {
-            Clear(this); //Clean the screen
+            Clear(); //Clean the screen
             Todo todo = new Todo("New todo");
 
             Form<Todo> editor = new Form<Todo>();
@@ -221,11 +221,53 @@ public class EditTodoScreen : Screen
             editor.AddOption("Progress", "Complete", Todo.TodoState.Done);
             editor.Edit(todo);
 
-            Clear(this);
+            Clear();
             Console.WriteLine($"Todo {todo.Title} is {todo.State}");
         }
     }
 ```
+
+## Tilpasning af farver
+
+Ønsker man at tilpasse flere skærme, så de f.eks. få et bestemt farve-tema, kan man lave en fælles basis-klasse, som skærmene arver fra. Prøv at tilføje følgende klasse til dit projekt, og lad dine øvrige skærme nedarve fra ColorScreen i stedet for blot Screen.
+
+```C#
+   public abstract class ColorScreen : Screen
+    {
+        public ColorScreen() : base()
+        {
+            DefaultForeground = ConsoleColor.Yellow;
+            DefaultBackground = ConsoleColor.Blue;
+            FocusForeground = ConsoleColor.Green;
+            FocusBackground = ConsoleColor.Cyan;
+            FieldForeground = ConsoleColor.White;
+            FieldBackground = ConsoleColor.DarkGray;
+        }
+    }
+```
+
+### Tilføj keybindings
+
+Det er muligt på en ListPage at tilføje keybindings, som vil virke når vi kalder "Select()", udover PIL-op/ned ENTER.
+
+
+```C#
+    listPage.AddKey(ConsoleKey.F12, ShowHelp);
+    Console.WriteLine("Press F12 to show help");
+```
+
+Ovenståede tilføjer en keybinding til F12 og kalder funktionen ShowHelp, når brugeren trykker F12. For at få det til at virke, skal vi også tilføje den funktion som bliver kaldt.
+
+```C#
+
+        void ShowHelp(Todo _)
+        {
+                Screen.Display(new HelpScreen());
+        }
+```
+
+I ovenstående eksempel er vi ligeglade med hvilket Todo item listen stod på da vi trykkede F12. Derfor giver vi blot argumentet navnet "_". Hvis vi ønsker at bruge det enkelte item, kan vi give det et navn og bruge det i funktionen.
+
 
 ## Lav en menu
 Menuer er en samling af skærme (Screens), som den lader brugeren vælge imellem. Vi tager udgangspunkt i de tre skærme vi har lavet i denne guide.

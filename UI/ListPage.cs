@@ -116,8 +116,6 @@ namespace TECHCOOL.UI
             {
                 if (select && selected_index == i++)
                 {
-                    //                    Console.BackgroundColor = ConsoleColor.Gray;
-                    //                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = Screen.FocusBackground;
                     Console.ForegroundColor = Screen.FocusForeground;
                 }
@@ -168,11 +166,9 @@ namespace TECHCOOL.UI
             {
                 Console.SetCursorPosition(x,y);
                 Draw();
-                key = Console.ReadKey().Key;
+                key = Console.ReadKey(true).Key;
                 switch (key)
                 {
-                    case ConsoleKey.Escape:
-                        return default(T);
                     case ConsoleKey.Enter:
                         return records[selected_index];
                     case ConsoleKey.DownArrow:
@@ -186,19 +182,21 @@ namespace TECHCOOL.UI
                             if (records.Count > 0 && records.Contains(records[selected_index])) 
                             {
                                 keyActions[key](records[selected_index]);
+                                return default(T);
                             }    
                             else
                             {
                                 keyActions[key](new T());
                             }
                         }
+                        else
+                        {
+                            Console.Beep();
+                        }
                         break;
-                        
-                }
-                
+                }    
             }
             while (true);
         }
     }
 }
-

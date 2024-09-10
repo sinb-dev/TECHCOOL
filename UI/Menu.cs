@@ -4,12 +4,27 @@ using System.Text;
 
 namespace TECHCOOL.UI 
 {
-    public class Menu
+    public class Menu : Screen
     {
+        public override string Title { get; set; } = "Menu";
+
         List<Screen> screens = new List<Screen>();
         int index = 0;
         public int Index { get { return index; } set { index = value % screens.Count; } }
-        public Screen Screen { get { return screens.Count > 0 ? screens[index] : null; } }
+        public Screen SelectedScreen { get { return screens.Count > 0 ? screens[index] : null; } }
+
+        public Menu()
+        {
+            AddKey(ConsoleKey.Escape, () =>
+                { 
+                    ConfirmScreen conf = new("This will exit the menu");
+                    Screen.Display(conf);
+                    if (conf.confirmed) Quit();
+                });
+            AddKey(ConsoleKey.DownArrow, () => Down());
+            AddKey(ConsoleKey.UpArrow, () => Up());
+            AddKey(ConsoleKey.Enter, () => Screen.Display(SelectedScreen));
+        }
         public void Add(Screen screen)
         {
             screens.Add(screen);
@@ -26,7 +41,7 @@ namespace TECHCOOL.UI
             if (index >= screens.Count) index = 0;
         }
 
-        public void Draw()
+        protected override void Draw()
         {
             for (int i = 0; i < screens.Count; i++)
             {
@@ -39,38 +54,6 @@ namespace TECHCOOL.UI
                 Console.BackgroundColor = Screen.DefaultBackground;
                 Console.ForegroundColor = Screen.DefaultForeground;
             }
-        }
-
-        public void Start(Screen screen) 
-        {
-            ConsoleKeyInfo key;
-            int x,y;
-            (x,y) = Console.GetCursorPosition();
-            
-            do
-            {
-                Console.SetCursorPosition(x,y);
-                Screen.Clear();
-                Draw();
-                key = Console.ReadKey();
-                switch (key.Key)
-                {
-                    case ConsoleKey.Enter:
-                        Screen.Display(Screen);
-                        break;
-                    case ConsoleKey.DownArrow:
-                        Down();
-                        break;
-                    case ConsoleKey.UpArrow:
-                        Up();
-                        break;
-                    case ConsoleKey.Escape:
-                        screen.Quit();
-                        return;
-                }
-
-            }
-            while (true);
         }
     }
 }
