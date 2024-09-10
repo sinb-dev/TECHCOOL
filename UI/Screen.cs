@@ -21,7 +21,7 @@ namespace TECHCOOL.UI
         public static ConsoleColor ErrorForeground = ConsoleColor.Red;
         public static ConsoleColor ErrorBackground = ConsoleColor.Gray;
         static Stack<Screen> screen_stack = new();
-        static Dictionary<ConsoleKey, Action> keyActions = new();
+        private Dictionary<ConsoleKey, Action> keyActions = new();
         private bool quit = false;
 
         public static void Display(Screen screen)
@@ -31,19 +31,25 @@ namespace TECHCOOL.UI
             do
             {
                 Clear();
-                keyActions = new();
                 screen_stack.Peek().Draw();
-                if (screen.quit)
-                    break;
-                key = Console.ReadKey().Key;
-                if (keyActions.ContainsKey(key)) {
-                    keyActions[key]();
+                if (screen.keyActions.Count > 0)
+                {
+                    key = Console.ReadKey(true).Key;
+                    if (screen.keyActions.ContainsKey(key))
+                    {
+                        screen.keyActions[key]();
+                    }
+                    else
+                    {
+                        Console.Beep();
+                    }
                 }
-            } while (true);
+            } while (!screen.quit);
+
         }
         public void ExitOnEscape() 
         {
-            AddKey(ConsoleKey.Escape, () => { screen_stack.Pop(); });
+            AddKey(ConsoleKey.Escape, () => Quit() );
         }
         public static void ColorDefault()
         {
@@ -70,7 +76,7 @@ namespace TECHCOOL.UI
             Console.BackgroundColor = EditBackground;
             Console.ForegroundColor = EditForeground;
         }
-
+        /*
         static void fastClear()
         {
             Console.SetCursorPosition(0, 0);
@@ -80,19 +86,17 @@ namespace TECHCOOL.UI
             }
             Console.SetCursorPosition(0, 0);
         }
+        */
         public static void Clear()
         {
             ColorDefault();
-            fastClear();
+            Console.Clear();
             Console.WriteLine(string.Format("==={0}===", Screen.BreadCrumbs));
         }
         public void Quit()
         {
             quit = true;
             screen_stack.Pop();
-            Clear();
-            if (screen_stack.TryPeek(out _))
-                screen_stack.Peek().Draw();
         }
 
         public void AddKey(ConsoleKey key, Action callback)

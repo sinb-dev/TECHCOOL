@@ -98,7 +98,7 @@ namespace TECHCOOL.UI
                 Console.SetCursorPosition(x, y);
                 field_edit_index = Math.Clamp(field_edit_index, 0, fields.Count - 1);
                 Draw();
-                key = Console.ReadKey();
+                key = Console.ReadKey(true);
                 switch (key.Key)
                 {
                     case ConsoleKey.Enter:
@@ -310,7 +310,7 @@ namespace TECHCOOL.UI
                 }
 
 
-                ConsoleKey key = Console.ReadKey().Key;
+                ConsoleKey key = Console.ReadKey(true).Key;
                 index = Math.Clamp(index, 0, Options.Count - 1);
                 switch (key)
                 {
