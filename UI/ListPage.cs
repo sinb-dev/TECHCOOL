@@ -156,7 +156,8 @@ namespace TECHCOOL.UI
                         var val = kv.Value.ValueProcessor(prop.GetValue(r));
 
                         int width = kv.Value.Width;
-                        sb.AppendFormat("{0, -" + width + "}{1}", val, V_BORDER_CHARACTER);
+                        var output = String.Format("{0, -" + width + "}", val)[0..width];
+                        sb.AppendFormat(output + V_BORDER_CHARACTER);
                     }
                     catch (NullReferenceException e)
                     {
