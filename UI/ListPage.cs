@@ -14,7 +14,10 @@ namespace TECHCOOL.UI
         const char SE_CORNER = '┘';
         const char WEST_T = '├';
         const char EAST_T = '┤';
-        // const char CROSS = '┼';
+        const char NORTH_T = '┬';
+        const char SOUTH_T = '┴';
+        const char CROSS = '┼';
+
         class Column {
             public string Title { get; set; }
             public string Property { get; set; }
@@ -98,18 +101,42 @@ namespace TECHCOOL.UI
             int total_width = getWidth();
             if (total_width < 2) return;
 
-            string H_LINE = "".PadRight(total_width - 2, H_BORDER_CHARACTER);
+            // build horizontalt line graphics
+            string UH_LINE = "" + NW_CORNER;
+            string MH_LINE = "" + WEST_T;
+            string LH_LINE = "" + SW_CORNER;
 
-            sb.Append(NW_CORNER + H_LINE + NE_CORNER + Environment.NewLine);
+            int count = 0;
+            foreach (KeyValuePair<string, Column> kv in columns)
+            {
+                int width = kv.Value.Width;
+                var fill = "".PadRight(width, H_BORDER_CHARACTER);
+                UH_LINE += fill + (count < columns.Count-1 ? NORTH_T : null);
+                MH_LINE += fill + (count < columns.Count - 1 ? CROSS : null);
+                LH_LINE += fill + (count < columns.Count - 1 ? SOUTH_T : null);
+                count++;
+            }
+
+            UH_LINE += "" + NE_CORNER;
+            MH_LINE += "" + EAST_T;
+            LH_LINE += "" + SE_CORNER;
+
+            // draw header
+            sb.Append(UH_LINE + Environment.NewLine);
+
             sb.Append(V_BORDER_CHARACTER);
             foreach (KeyValuePair<string, Column> kv in columns)
             {
                 int width = kv.Value.Width;
                 sb.AppendFormat("{0, -" + width + "}{1}", kv.Value.Title, V_BORDER_CHARACTER);
             }
+
             sb.Append(Environment.NewLine);
-            sb.Append(WEST_T + H_LINE + EAST_T);
+            sb.Append(MH_LINE);
             Console.WriteLine(sb);
+
+            // draw contents
+
             sb.Clear();
             var i = 0;
             foreach (T r in records)
@@ -142,7 +169,7 @@ namespace TECHCOOL.UI
                 Console.ForegroundColor = Screen.DefaultForeground;
                 sb.Clear();
             }
-            sb.Append(SW_CORNER + H_LINE + SE_CORNER);
+            sb.Append(LH_LINE);
             Console.WriteLine(sb.ToString());
             Console.SetCursorPosition(0, selected_index);
         }
