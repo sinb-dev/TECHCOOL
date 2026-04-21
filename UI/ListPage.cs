@@ -220,6 +220,8 @@ namespace TECHCOOL.UI
                         if (records.Count > 0)
                             Up();
                         break;
+                    case ConsoleKey.Escape:
+                        return default;
                     default:
                         if (keyActions.ContainsKey(key)) {
                             if (records.Count > 0 && records.Contains(records[selected_index])) 

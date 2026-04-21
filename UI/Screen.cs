@@ -32,7 +32,7 @@ namespace TECHCOOL.UI
             {
                 Clear();
                 screen_stack.Peek().Draw();
-                if (screen.keyActions.Count > 0)
+                if (screen_stack.Contains(screen) && !screen.quit && screen.keyActions.Count > 0)
                 {
                     key = Console.ReadKey(true).Key;
                     if (screen.keyActions.ContainsKey(key))
@@ -95,8 +95,11 @@ namespace TECHCOOL.UI
         }
         public void Quit()
         {
+            Clear();
             quit = true;
             screen_stack.Pop();
+            if (screen_stack.Count > 0)
+                screen_stack.Peek().Draw();
         }
 
         public void AddKey(ConsoleKey key, Action callback)
