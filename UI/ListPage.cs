@@ -104,7 +104,7 @@ namespace TECHCOOL.UI
 
         public void Draw()
         {
-            Screen.Clear();
+            //Screen.Clear();
             StringBuilder sb = new StringBuilder();
             int total_width = getWidth();
             if (total_width < 2) return;
